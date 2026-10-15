@@ -1,0 +1,14 @@
+{
+  "title": "Resultados de la operación",
+  "source_references": ["src-01"],
+  "executive_summary": "El equipo completó el trabajo acordado.",
+  "findings": [
+    {
+      "title": "Entrega",
+      "evidence": "Acta src-01",
+      "analysis": "La entrega quedó registrada."
+    }
+  ],
+  "quotations": [],
+  "citations": []
+}

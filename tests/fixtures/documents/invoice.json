@@ -1,0 +1,23 @@
+{
+  "invoice_number": "HT-2026-051",
+  "issue_date": "2026-10-14",
+  "due_date": "2026-10-28",
+  "customer": {
+    "name": "Cliente de prueba",
+    "tax_id": "900000000-1",
+    "address": "Bogotá, Colombia"
+  },
+  "lines": [
+    {
+      "description": "Configuración inicial del flujo de facturación",
+      "quantity": 2,
+      "unit_price": 175000,
+      "tax_rate": 0.19,
+      "total": 350000
+    }
+  ],
+  "subtotal": 350000,
+  "tax_total": 66500,
+  "grand_total": 416500,
+  "currency": "COP"
+}

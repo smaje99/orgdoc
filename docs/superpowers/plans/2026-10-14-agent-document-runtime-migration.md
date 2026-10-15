@@ -268,12 +268,12 @@ Human-readable output is for direct users. Every command used by agents supports
 - Consumes: worker protocol from Task 4 and document contracts from Tasks 3 and 5.
 - Produces: a ReportLab PDF invoice worker and a Markdown report worker using the same brand profile contract.
 
-- [ ] Inventory and port the invoice generation logic from the user-designated Facturas workspace only when implementation begins and the user-provided source files are available to the implementation workspace; do not copy customer invoice outputs into this repository.
-- [ ] Generate an invoice PDF from a typed JSON fixture using ReportLab and the resolved brand profile.
-- [ ] Generate a narrative Markdown report with brand voice and template context.
-- [ ] Render test PDFs to images and verify page geometry, logo placement, colors, typography fallback, totals, and overflow behavior.
-- [ ] Run both document types for each of two brand profiles and verify visual tokens are selected from the right profile.
-- [ ] Keep worker dependencies isolated from the Go CLI install and report a clear diagnostic when the worker environment is absent.
+- [x] Inventory the user-designated Facturas workspace. Its source generates contractual receipts and explicitly excludes sales invoices; use the visual brand treatment as reference and implement the invoice renderer from OrgDoc's typed invoice schema. Do not copy customer invoice outputs.
+- [x] Generate an invoice PDF from a typed JSON fixture using ReportLab and the resolved brand profile.
+- [x] Generate a narrative Markdown report with brand voice and template context.
+- [x] Render test PDFs to images and verify A4 page geometry, SVG logo placement, brand colors, Helvetica fallback, totals, and multi-page overflow behavior.
+- [x] Run both document types for each of two brand profiles and verify visual tokens are selected from the right profile.
+- [x] Keep worker dependencies isolated from the Go CLI install and report a clear diagnostic when the worker environment is absent.
 
 **Acceptance:** Invoice and report workers run through the same Go contract, use separate document rules, and produce visually verified artifacts for two brands.
 

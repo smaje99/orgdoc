@@ -1,0 +1,19 @@
+[project]
+name = "orgdoc-reportlab-invoice-worker"
+version = "0.1.0"
+description = "Isolated ReportLab invoice renderer for OrgDoc"
+requires-python = ">=3.10"
+dependencies = [
+  "reportlab==5.0.1",
+  "svglib==2.3.0",
+]
+
+[project.scripts]
+orgdoc-render-invoice = "orgdoc_invoice.worker:main"
+
+[build-system]
+requires = ["hatchling>=1.24,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/orgdoc_invoice"]

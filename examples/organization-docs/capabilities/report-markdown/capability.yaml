@@ -1,0 +1,17 @@
+schema_version: 1
+id: report-markdown
+version: 1.0.0
+description: Render a typed narrative report as Markdown with the selected brand voice context.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-render-report
+resource_class: cpu
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:write_artifact_dir
+timeout_seconds: 60
+max_output_bytes: 1048576

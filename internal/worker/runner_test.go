@@ -50,6 +50,18 @@ func TestRunReportsNonzeroWorkerExit(t *testing.T) {
 	}
 }
 
+func TestRunReportsClearDiagnosticWhenWorkerEnvironmentIsMissing(t *testing.T) {
+	capability := Capability{ID: "invoice-pdf", Runtime: "python", EntryPoint: []string{"orgdoc-worker-that-is-not-installed"}, ResourceClass: ResourceClassCPU, MaxOutputBytes: 1024, TimeoutSeconds: 1}
+	request := WorkerRequest{ProtocolVersion: 1, JobID: "job-1", ArtifactDir: filepath.Join(t.TempDir(), "job-1")}
+	result, err := NewRunner(nil, time.Second).Run(context.Background(), capability, request)
+	if err == nil || result.Status != WorkerStatusFailed || !hasWorkerDiagnostic(result, "worker_environment_missing") {
+		t.Fatalf("Run() = (%#v, %v), want a missing worker environment diagnostic", result, err)
+	}
+	if !strings.Contains(result.Diagnostics[0].Message, "isolated worker environment") {
+		t.Fatalf("diagnostic does not explain how to resolve the missing environment: %#v", result.Diagnostics[0])
+	}
+}
+
 func TestRunRejectsOversizedWorkerOutput(t *testing.T) {
 	result, err := runFixture(t, "oversized-output.sh", 64, time.Second)
 	if err == nil || result.Status != WorkerStatusFailed || !hasWorkerDiagnostic(result, "output_limit") {

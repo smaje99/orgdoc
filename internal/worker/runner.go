@@ -134,6 +134,10 @@ platformSupported:
 		return fail("canceled", "worker was canceled")
 	}
 	if runErr != nil {
+		var execError *exec.Error
+		if errors.As(runErr, &execError) && errors.Is(execError.Err, exec.ErrNotFound) {
+			return fail("worker_environment_missing", fmt.Sprintf("capability %q worker command %q is unavailable; install its isolated worker environment and make the command available on PATH", capability.ID, capability.EntryPoint[0]))
+		}
 		message := fmt.Sprintf("worker process failed: %v", runErr)
 		if stderr.Len() > 0 {
 			message += ": " + redact(stderr.String())

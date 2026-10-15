@@ -1,0 +1,18 @@
+schema_version: 1
+id: invoice-pdf
+version: 1.0.0
+description: Render a typed invoice request as a branded A4 PDF using ReportLab.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-render-invoice
+resource_class: cpu
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:read_organization
+  - filesystem:write_artifact_dir
+timeout_seconds: 120
+max_output_bytes: 1048576
