@@ -1,0 +1,13 @@
+schema_version: 1
+id: spreadsheet
+name: Libro de cálculo
+version: 1.0.0
+request_schema: schemas/workbook-request.schema.json
+required_fields:
+  - title
+  - formula_policy
+  - sheets
+protected_fields:
+  - sheets[].rows[].protected
+  - sheets[].rows[].formula
+renderer_capability: spreadsheet-xlsx

@@ -6,6 +6,7 @@ Install Python 3 and `uv` before installing a Python worker. The current worker 
 
 | Capability | Worker project | Extra prerequisites |
 | --- | --- | --- |
+| `spreadsheet-xlsx` | `spreadsheet` | None for `.xlsx`; LibreOffice is optional for formula recalculation or PDF previews |
 | `invoice-pdf` | `reportlab-invoice` | None beyond Python and uv |
 | `report-markdown` | `narrative-report` | None beyond Python and uv |
 | `media-scan` | `media-transcription` | None; scanning only inspects paths and media extensions |
@@ -27,4 +28,6 @@ Worker code runs with the current user's operating-system permissions. Capabilit
 
 The runner filters inherited environment variables, preserves the configured `MEDIA_REPORT_OPENAI_API_KEY` for the explicitly selected OpenAI-compatible provider, and redacts common credential forms from worker stderr and diagnostics. This is not a sandbox or complete secret detector. See the [security model](../product/security-model.md) for the exact allowlist, timeout behavior, and limitations.
 
-Spreadsheet, presentation, and PDF form workers are planned capabilities and do not have release bundles yet. Their exact prerequisites will be added here when those workers are implemented.
+Copy the `spreadsheet-xlsx` capability and the `spreadsheet` document type from the sample organization repository when enabling workbook generation. For spreadsheet inputs, choose `formula_policy: spreadsheet_app` to leave formulas for recalculation by the spreadsheet application, or `formula_policy: libreoffice` to request local recalculation. `validation.render_pdf: true` requests an additional PDF preview. Both LibreOffice options fail with a clear worker diagnostic if LibreOffice is unavailable. Worksheet protection prevents accidental edits; it does not provide confidentiality or tamper resistance.
+
+Presentation and PDF form workers are planned capabilities and do not have release bundles yet.

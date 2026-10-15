@@ -1,0 +1,51 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Branded spreadsheet request",
+  "type": "object",
+  "required": ["title", "formula_policy", "sheets"],
+  "properties": {
+    "title": {"type": "string", "minLength": 1, "maxLength": 255},
+    "formula_policy": {"enum": ["spreadsheet_app", "libreoffice"]},
+    "validation": {"type": "object", "properties": {"render_pdf": {"type": "boolean"}}, "additionalProperties": false},
+    "sheets": {"$ref": "#/$defs/sheets"}
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "cell": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {"enum": ["string", "number", "currency", "percentage", "boolean", "date", "formula"]},
+        "value": {"type": ["string", "number", "boolean"]},
+        "formula": {"type": "string", "pattern": "^=", "maxLength": 2000},
+        "number_format": {"type": "string", "maxLength": 128},
+        "protected": {"type": "boolean"}
+      },
+      "allOf": [
+        {"if": {"properties": {"type": {"const": "formula"}}}, "then": {"required": ["formula"], "not": {"required": ["value"]}}, "else": {"required": ["value"], "not": {"required": ["formula"]}}},
+        {"if": {"properties": {"type": {"const": "string"}}}, "then": {"properties": {"value": {"type": "string"}}}},
+        {"if": {"properties": {"type": {"enum": ["number", "currency", "percentage"]}}}, "then": {"properties": {"value": {"type": "number"}}}},
+        {"if": {"properties": {"type": {"const": "boolean"}}}, "then": {"properties": {"value": {"type": "boolean"}}}},
+        {"if": {"properties": {"type": {"const": "date"}}}, "then": {"properties": {"value": {"type": "string", "format": "date"}}}}
+      ],
+      "additionalProperties": false
+    },
+    "sheets": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 20,
+      "items": {
+        "type": "object",
+        "required": ["name", "rows"],
+        "properties": {
+          "name": {"type": "string", "minLength": 1, "maxLength": 31, "pattern": "^[^\\[\\]:*?/\\\\]+$"},
+          "protect": {"type": "boolean"},
+          "rows": {"type": "array", "minItems": 1, "items": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/cell"}}},
+          "tables": {"type": "array", "items": {"type": "object", "required": ["name", "ref"], "properties": {"name": {"type": "string", "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$"}, "ref": {"type": "string", "pattern": "^[A-Z]+[1-9][0-9]*:[A-Z]+[1-9][0-9]*$"}, "style": {"type": "string", "enum": ["TableStyleMedium2", "TableStyleMedium4", "TableStyleMedium9", "TableStyleMedium21"]}}, "additionalProperties": false}},
+          "charts": {"type": "array", "items": {"type": "object", "required": ["type", "data_ref", "categories_ref", "anchor"], "properties": {"type": {"enum": ["bar", "line", "pie"]}, "title": {"type": "string", "maxLength": 255}, "data_ref": {"type": "string", "pattern": "^[A-Z]+[1-9][0-9]*:[A-Z]+[1-9][0-9]*$"}, "categories_ref": {"type": "string", "pattern": "^[A-Z]+[1-9][0-9]*:[A-Z]+[1-9][0-9]*$"}, "anchor": {"type": "string", "pattern": "^[A-Z]+[1-9][0-9]*$"}}, "additionalProperties": false}}
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

@@ -166,13 +166,13 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - The security guide separates enforced runtime controls from policy declarations and future OS-level isolation.
 - Worker execution stays noninteractive and local-first. Any new opt-in or environment policy must have a stable CLI/config contract and preserve explicit remote-provider warnings.
 
-- [ ] Document current controls: direct process invocation without shell interpolation, input/schema validation, timeouts, cancellation, concurrency limits, bounded stdout/stderr, fresh artifact directories, and validation of reported output paths.
-- [ ] Document missing guarantees: workers inherit user OS permissions and environment by default; manifest permissions do not restrict filesystem/network access; output checks do not prevent arbitrary side effects; concurrency classes do not enforce memory/CPU/disk quotas; checksum is integrity against corruption, not publisher identity.
-- [ ] Add tests for secret redaction across worker stderr and structured diagnostics, including common authorization headers and JSON key/value forms; do not claim complete secret detection.
-- [ ] Decide and implement a minimal child-process environment policy that preserves explicitly required provider credentials while excluding unrelated inherited variables; document the allowlist.
-- [ ] Verify timeout/cancellation terminates the worker process tree on supported Unix platforms and document platform differences.
-- [ ] Add capability trust guidance to CLI output/docs: install/run only organization code the user trusts; do not imply a sandbox.
-- [ ] Run focused runner/security tests and commit as `🔒 feat(worker): clarify and tighten execution boundaries`.
+- [x] Document current controls: direct process invocation without shell interpolation, input/schema validation, timeouts, cancellation, concurrency limits, bounded stdout/stderr, fresh artifact directories, and validation of reported output paths.
+- [x] Document missing guarantees: workers inherit user OS permissions and environment by default; manifest permissions do not restrict filesystem/network access; output checks do not prevent arbitrary side effects; concurrency classes do not enforce memory/CPU/disk quotas; checksum is integrity against corruption, not publisher identity.
+- [x] Add tests for secret redaction across worker stderr and structured diagnostics, including common authorization headers and JSON key/value forms; do not claim complete secret detection.
+- [x] Decide and implement a minimal child-process environment policy that preserves explicitly required provider credentials while excluding unrelated inherited variables; document the allowlist.
+- [x] Verify timeout/cancellation terminates the worker process tree on supported Unix platforms and document platform differences.
+- [x] Add capability trust guidance to CLI output/docs: install/run only organization code the user trusts; do not imply a sandbox.
+- [x] Run focused runner/security tests and commit as `🔒 feat(worker): clarify and tighten execution boundaries` (`1ad0eda`).
 
 ### Task 6: Add the branded spreadsheet capability
 
@@ -180,19 +180,20 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Create: `workers/python/spreadsheet/`
 - Create: `examples/organization-docs/capabilities/spreadsheet-xlsx/`
 - Create: spreadsheet input/output schemas and a document-type profile
-- Modify: `examples/organization-docs/organization.yaml` and examples/tests
+- Modify: `examples/organization-docs/organization.yaml`, `workers/catalog.json`, package tests, and Go tests
+- Modify: `docs/installation/workers.md` and `docs/product/agent-document-runtime.md`
 
 **Interfaces:**
 - Capability ID: `spreadsheet-xlsx`.
 - Initial output: `.xlsx` generated from typed data, a declared workbook layout, and the selected brand profile.
-- Formula policy is explicit per document profile: formulas are either delivered for recalculation by a spreadsheet application or recalculated with an installed compatible engine; the worker must not imply formula results were computed when they were not.
+- The document-type request schema requires an explicit formula policy: formulas are either delivered for recalculation by a spreadsheet application or recalculated with an installed compatible engine; the worker must not imply formula results were computed when they were not. Organizations can restrict the allowed policy in their schema.
 
-- [ ] Add schemas for workbook sheets, typed cells/tables, formulas, number formats, and charts supported by the initial worker.
-- [ ] Implement a worker using one selected library (openpyxl or XlsxWriter) with deterministic entrypoint and JSON contract.
-- [ ] Add golden workbooks for two brands; verify sheets, formulas, styles, protected values, and chart/table metadata.
-- [ ] Add optional LibreOffice recalculation/render validation only when installed; return a clear capability diagnostic when requested and unavailable.
-- [ ] Package/install the worker through Task 2 and include it in doctor checks.
-- [ ] Run worker tests and inspect generated workbook content/render; commit as `✨ feat(documents): render branded spreadsheets`.
+- [x] Add schemas for workbook sheets, typed cells/tables, formulas, number formats, and charts supported by the initial worker.
+- [x] Implement a worker using one selected library (openpyxl or XlsxWriter) with deterministic entrypoint and JSON contract.
+- [x] Add golden workbooks for two brands; verify sheets, formulas, styles, protected values, and chart/table metadata.
+- [x] Add optional LibreOffice recalculation/render validation only when installed; return a clear capability diagnostic when requested and unavailable.
+- [x] Package/install the worker through Task 2 and include it in doctor checks.
+- [x] Run worker tests and inspect generated workbook content/render; commit as `✨ feat(documents): render branded spreadsheets`.
 
 ### Task 7: Add the branded presentation capability
 

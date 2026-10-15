@@ -14,12 +14,14 @@ CATALOG_PATH = ROOT / "workers" / "catalog.json"
 PACKAGER_PATH = ROOT / "scripts" / "package-workers.py"
 INSTALLER_PATH = ROOT / "scripts" / "install-worker.sh"
 EXPECTED_WORKERS = {
+  "spreadsheet": {"spreadsheet-xlsx"},
   "reportlab-invoice": {"invoice-pdf"},
   "narrative-report": {"report-markdown"},
   "media-report": {"media-report", "media-pdf"},
   "media-transcription": {"media-scan", "media-transcription"},
 }
 EXPECTED_COMPAT_RUNTIME = {
+  "spreadsheet": False,
   "reportlab-invoice": False,
   "narrative-report": False,
   "media-report": True,
@@ -91,7 +93,13 @@ class WorkerCatalogTests(unittest.TestCase):
       )
       self.assertEqual(result.returncode, 0, result.stderr)
 
-      worker_ids = {"reportlab-invoice", "narrative-report", "media-report", "media-transcription"}
+      worker_ids = {
+        "spreadsheet",
+        "reportlab-invoice",
+        "narrative-report",
+        "media-report",
+        "media-transcription",
+      }
       bundles = {path.name for path in output_dir.glob("orgdoc-worker-*.tar.gz")}
       self.assertEqual(
         bundles,
@@ -124,6 +132,20 @@ class WorkerCatalogTests(unittest.TestCase):
       invoice_bundle = output_dir / f"orgdoc-worker-reportlab-invoice-{version}-source.tar.gz"
       with tarfile.open(invoice_bundle, "r:gz") as archive:
         self.assertNotIn("src/media_report", set(archive.getnames()))
+
+      spreadsheet_bundle = output_dir / f"orgdoc-worker-spreadsheet-{version}-source.tar.gz"
+      with tarfile.open(spreadsheet_bundle, "r:gz") as archive:
+        members = set(archive.getnames())
+        self.assertIn("workers/python/spreadsheet/pyproject.toml", members)
+        self.assertIn("workers/python/spreadsheet/uv.lock", members)
+        self.assertIn("workers/python/spreadsheet/src/orgdoc_spreadsheet/worker.py", members)
+        self.assertIn("workers/python/spreadsheet/examples/quarterly-revenue.json", members)
+        self.assertIn(
+          "examples/organization-docs/capabilities/spreadsheet-xlsx/capability.yaml", members
+        )
+        metadata = json.load(archive.extractfile("worker-bundle.json"))
+        self.assertEqual(metadata["worker_id"], "spreadsheet")
+        self.assertEqual(metadata["capabilities"], ["spreadsheet-xlsx"])
 
   def test_worker_installer_verifies_bundle_and_installs_one_isolated_project(self):
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()

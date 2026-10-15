@@ -45,6 +45,10 @@ func TestCommittedExampleOrganizationResolvesBothBrands(t *testing.T) {
 	if err != nil || academy.Brand.ID != "henko-academy" {
 		t.Fatalf("academy profile = (%#v, %v)", academy, err)
 	}
+	spreadsheet, err := ResolveProfile(root, "consulting", "spreadsheet")
+	if err != nil || spreadsheet.DocumentType.RendererCapability != "spreadsheet-xlsx" || spreadsheet.Brand.ID != "henko" {
+		t.Fatalf("spreadsheet profile = (%#v, %v)", spreadsheet, err)
+	}
 	for _, documentType := range []string{"media-scan", "media-transcription", "media-report", "media-pdf"} {
 		media, err := ResolveProfile(root, "media", documentType)
 		if err != nil || media.DocumentType.RendererCapability != documentType {

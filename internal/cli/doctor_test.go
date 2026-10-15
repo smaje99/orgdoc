@@ -32,6 +32,20 @@ func TestDoctorReportsMissingOrganization(t *testing.T) {
 	}
 }
 
+func TestDoctorDiscoversSpreadsheetWorkerFromExampleOrganization(t *testing.T) {
+	root := filepath.Join("..", "..", "examples", "organization-docs")
+	checks, _, _, stderr := runDoctorJSON(t, root)
+	if stderr != "" {
+		t.Fatalf("doctor stderr = %q", stderr)
+	}
+	for _, check := range checks {
+		if check.ID == "capability:spreadsheet-xlsx:entrypoint" {
+			return
+		}
+	}
+	t.Fatalf("doctor omitted the spreadsheet worker entrypoint check: %#v", checks)
+}
+
 func TestDoctorWarnsWhenNoCapabilitiesAreDeclared(t *testing.T) {
 	root := writeDoctorOrganization(t)
 	checks, code, stdout, stderr := runDoctorJSON(t, root)

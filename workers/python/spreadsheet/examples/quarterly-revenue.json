@@ -1,0 +1,36 @@
+{
+  "title": "Ingresos trimestrales",
+  "formula_policy": "spreadsheet_app",
+  "sheets": [
+    {
+      "name": "Resumen",
+      "protect": true,
+      "rows": [
+        [
+          {"type": "string", "value": "Trimestre"},
+          {"type": "string", "value": "Ingresos"},
+          {"type": "string", "value": "Variación"}
+        ],
+        [
+          {"type": "string", "value": "T1"},
+          {"type": "currency", "value": 12000000, "protected": true},
+          {"type": "percentage", "value": 0.08}
+        ],
+        [
+          {"type": "string", "value": "T2"},
+          {"type": "currency", "value": 15800000, "protected": true},
+          {"type": "percentage", "value": 0.12}
+        ],
+        [
+          {"type": "string", "value": "Total"},
+          {"type": "formula", "formula": "=SUM(B2:B3)", "number_format": "$ #,##0.00"},
+          {"type": "formula", "formula": "=AVERAGE(C2:C3)", "number_format": "0.00%"}
+        ]
+      ],
+      "tables": [{"name": "QuarterlyRevenue", "ref": "A1:C3", "style": "TableStyleMedium2"}],
+      "charts": [
+        {"type": "bar", "title": "Ingresos por trimestre", "data_ref": "B2:B3", "categories_ref": "A2:A3", "anchor": "E2"}
+      ]
+    }
+  ]
+}

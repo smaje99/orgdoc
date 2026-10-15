@@ -1,0 +1,22 @@
+[project]
+name = "orgdoc-spreadsheet-worker"
+version = "0.1.0"
+description = "Isolated openpyxl spreadsheet renderer for OrgDoc"
+requires-python = ">=3.10"
+dependencies = ["openpyxl==3.1.5"]
+
+[project.optional-dependencies]
+dev = ["pytest>=9.1.1"]
+
+[project.scripts]
+orgdoc-render-spreadsheet = "orgdoc_spreadsheet.worker:main"
+
+[build-system]
+requires = ["hatchling>=1.24,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/orgdoc_spreadsheet"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]

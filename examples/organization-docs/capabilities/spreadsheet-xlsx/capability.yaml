@@ -1,0 +1,18 @@
+schema_version: 1
+id: spreadsheet-xlsx
+version: 1.0.0
+description: Render typed tables, formulas, and charts as a branded editable XLSX workbook.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-render-spreadsheet
+resource_class: memory
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:read_organization
+  - filesystem:write_artifact_dir
+timeout_seconds: 120
+max_output_bytes: 1048576

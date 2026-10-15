@@ -2,10 +2,13 @@
 
 OrgDoc Runtime gives organization-aware agents one local CLI for discovering document capabilities and producing consistent, auditable artifacts. Each organization repository versions its operations, brand profiles, document rules, agent skills, and renderer capabilities. The runtime resolves that context explicitly, validates input, runs the chosen capability, and records which versions produced each artifact.
 
-The first supported document set is:
+The supported document set includes:
 
+- **Branded spreadsheet**, with typed cells, formulas, tables, and charts rendered to an editable XLSX workbook.
 - **Invoice PDF**, with typed financial fields rendered by a ReportLab worker.
 - **Narrative report**, with brand voice applied to prose and rendered as Markdown.
+
+Spreadsheet requests select a formula policy: deliver formulas for recalculation by a spreadsheet application, or explicitly request LibreOffice recalculation. The worker never claims calculated results in the first mode; an organization can restrict the allowed policy in its document request schema.
 
 An organization can define multiple brands and operations. Each operation names its brand, so the runtime never guesses when an operation or brand is ambiguous. Visual tokens, document business rules, and writing guidance remain separate versioned inputs. Humanizer is an optional agent skill for requested narrative edits; it cannot modify amounts, identifiers, dates, quotations, citations, or other typed fields. See the [Humanizer policy](humanizer-policy.md) for its field boundary and voice rules.
 

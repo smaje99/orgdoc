@@ -11,6 +11,7 @@ operations:
   - operations/media.yaml
 document_types:
   - document-types/invoice.yaml
+  - document-types/spreadsheet.yaml
   - document-types/report.yaml
   - document-types/media-scan.yaml
   - document-types/media-transcription.yaml

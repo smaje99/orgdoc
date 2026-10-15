@@ -2,6 +2,16 @@
   "schema_version": 1,
   "workers": [
     {
+      "id": "spreadsheet",
+      "project_path": "workers/python/spreadsheet",
+      "capabilities": ["spreadsheet-xlsx"],
+      "entrypoints": ["orgdoc-render-spreadsheet"],
+      "minimum_python": "3.10",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": ["LibreOffice (optional, for requested formula recalculation or PDF preview)"],
+      "include_compat_runtime": false
+    },
+    {
       "id": "reportlab-invoice",
       "project_path": "workers/python/reportlab-invoice",
       "capabilities": ["invoice-pdf"],

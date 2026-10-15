@@ -1,11 +1,41 @@
 package document
 
 import (
+	"encoding/json"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
+
+	"github.com/smaje99/orgdoc/internal/orgconfig"
 )
+
+func TestValidateBrandedSpreadsheetExampleAgainstDocumentSchema(t *testing.T) {
+	organizationRoot := filepath.Join("..", "..", "examples", "organization-docs")
+	profile, err := orgconfig.ResolveProfile(organizationRoot, "consulting", "spreadsheet")
+	if err != nil {
+		t.Fatal(err)
+	}
+	example, err := os.ReadFile(filepath.Join("..", "..", "workers", "python", "spreadsheet", "examples", "quarterly-revenue.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var input map[string]any
+	if err := json.Unmarshal(example, &input); err != nil {
+		t.Fatal(err)
+	}
+	if err := ValidateDocumentInput(profile, input); err != nil {
+		t.Fatalf("valid spreadsheet example error = %v", err)
+	}
+
+	sheets := input["sheets"].([]any)
+	rows := sheets[0].(map[string]any)["rows"].([]any)
+	cell := rows[1].([]any)[1].(map[string]any)
+	cell["value"] = "twelve million"
+	if err := ValidateDocumentInput(profile, input); err == nil {
+		t.Fatal("spreadsheet schema accepted text for a currency cell")
+	}
+}
 
 func TestValidateDocumentInputUsesSelectedRequestSchema(t *testing.T) {
 	profile := goldenProfile(t, "henko", "#173F5F")
