@@ -36,6 +36,8 @@ func RunContext(ctx context.Context, args []string, stdin io.Reader, stdout, std
 		return ExitSuccess
 	case "capabilities":
 		return runCapabilities(commandArgs[1:], format, stdout, stderr)
+	case "doctor":
+		return runDoctor(commandArgs[1:], format, stdout, stderr)
 	case "organization":
 		return runOrganization(commandArgs[1:], format, stdout, stderr)
 	case "brands":
@@ -54,7 +56,7 @@ func RunContext(ctx context.Context, args []string, stdin io.Reader, stdout, std
 
 const helpText = `OrgDoc Runtime applies organization document rules and brand profiles.
 
-Usage: orgdoc [--format human|json] [--help|--version|capabilities|organization|brands|context|document|batch]
+Usage: orgdoc [--format human|json] [--help|--version|capabilities|doctor|organization|brands|context|document|batch]
 
 Options:
   --format FORMAT  Select human or JSON output for diagnostics.
@@ -62,6 +64,7 @@ Options:
   --version        Show the CLI version.
   capabilities list [--organization PATH]       List validated capabilities.
   capabilities describe ID [--organization PATH] Show one capability manifest.
+  doctor [--organization PATH]                  Check declared worker installations and prerequisites.
   organization validate [--organization PATH]   Validate organization profiles.
   brands list [--organization PATH]             List organization brands.
   context --operation ID --document-type ID      Build selected renderer context.

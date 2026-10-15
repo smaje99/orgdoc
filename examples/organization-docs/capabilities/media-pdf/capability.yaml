@@ -15,5 +15,15 @@ permissions:
   - filesystem:read_input
   - filesystem:write_artifact_dir
   - filesystem:write_media_artifacts
+prerequisites:
+  - executables:
+      - pandoc
+    mode: all
+    version_note: Install Pandoc 3 or newer.
+  - executables:
+      - xelatex
+      - lualatex
+    mode: any
+    version_note: Install either XeLaTeX or LuaLaTeX.
 timeout_seconds: 600
 max_output_bytes: 1048576

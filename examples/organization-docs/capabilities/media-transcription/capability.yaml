@@ -15,5 +15,10 @@ permissions:
   - filesystem:read_input
   - filesystem:write_artifact_dir
   - filesystem:write_media_artifacts
+prerequisites:
+  - executables:
+      - ffmpeg
+    mode: all
+    version_note: Install FFmpeg 4 or newer.
 timeout_seconds: 86400
 max_output_bytes: 2097152

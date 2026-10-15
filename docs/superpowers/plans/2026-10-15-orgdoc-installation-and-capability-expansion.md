@@ -127,11 +127,11 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - `orgdoc doctor [--organization PATH] [--format human|json]` returns stable checks with `id`, `status` (`ok`, `missing`, `warning`, `unsupported`), and actionable `message` fields.
 - Checks are metadata/executable-presence checks only; doctor must not run arbitrary worker jobs, download models, or call a network service.
 
-- [ ] Add tests for no organization, no declared workers, missing entrypoint, missing system executable, unsupported platform, and successful worker presence.
-- [ ] Add optional manifest prerequisites for executable names and version notes; do not treat declared permissions as enforced.
-- [ ] Implement JSON and human diagnostics with stable exit codes and deterministic ordering.
-- [ ] Document selected-worker setup and exact prerequisite commands for invoice, report, media, spreadsheet, presentation, and PDF form capabilities as they are added.
-- [ ] Run focused CLI/doctor tests and commit as `✨ feat(cli): diagnose worker installations`.
+- [x] Add tests for no organization, no declared workers, missing entrypoint, missing system executable, unsupported platform, and successful worker presence.
+- [x] Add optional manifest prerequisites for executable names and version notes; do not treat declared permissions as enforced.
+- [x] Implement JSON and human diagnostics with stable exit codes and deterministic ordering.
+- [x] Document selected-worker setup and exact prerequisite commands for invoice, report, media, spreadsheet, presentation, and PDF form capabilities as they are added.
+- [x] Run focused CLI/doctor tests and commit as `✨ feat(cli): diagnose worker installations`.
 
 ### Task 4: Deliver the CLI Skill and organization setup workflow
 
