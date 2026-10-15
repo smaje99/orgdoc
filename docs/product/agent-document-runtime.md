@@ -7,7 +7,7 @@ The first supported document set is:
 - **Invoice PDF**, with typed financial fields rendered by a ReportLab worker.
 - **Narrative report**, with brand voice applied to prose and rendered as Markdown.
 
-An organization can define multiple brands and operations. Each operation names its brand, so the runtime never guesses when an operation or brand is ambiguous. Visual tokens, document business rules, and writing guidance remain separate versioned inputs. Humanizer is an optional agent skill for requested narrative edits; it cannot modify amounts, identifiers, dates, quotations, citations, or other typed fields.
+An organization can define multiple brands and operations. Each operation names its brand, so the runtime never guesses when an operation or brand is ambiguous. Visual tokens, document business rules, and writing guidance remain separate versioned inputs. Humanizer is an optional agent skill for requested narrative edits; it cannot modify amounts, identifiers, dates, quotations, citations, or other typed fields. See the [Humanizer policy](humanizer-policy.md) for its field boundary and voice rules.
 
 Local media transcription and reporting remain available as optional capabilities. Their Python and native workers are installed independently from the Go runtime. Core CLI startup, help, organization validation, and capability discovery do not start Python, load a model, or access a network service.
 
@@ -40,7 +40,7 @@ orgdoc organization validate --organization PATH --format json
 orgdoc capabilities list --organization PATH --format json
 orgdoc brands list --organization PATH --format json
 orgdoc context --organization PATH --operation ID --document-type ID --format json
-orgdoc document render --organization PATH --operation ID --document-type ID --input INPUT.json --output-root ARTIFACTS --format json
+orgdoc document render --organization PATH --operation ID --document-type ID --input INPUT.json --output-root ARTIFACTS --format json [--pre-humanized-text ORIGINAL.md]
 ```
 
-Each render uses a new `job_id` directory and writes `run-manifest.json` with selected profile and capability versions, input references, timestamps, output paths, and stage statuses. Reusing an existing job ID fails without changing its artifacts. Send `--input -` to read the JSON request from standard input.
+Each render uses a new `job_id` directory and writes `run-manifest.json` with selected profile and capability versions, input references, timestamps, output paths, and stage statuses. Reusing an existing job ID fails without changing its artifacts. Send `--input -` to read the JSON request from standard input. Pass `--pre-humanized-text ORIGINAL.md` when the original prose should be retained verbatim in the run record.

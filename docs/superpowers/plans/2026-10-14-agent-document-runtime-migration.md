@@ -234,18 +234,22 @@ Human-readable output is for direct users. Every command used by agents supports
 - Create: `skills/humanizer/references/brand-voice.md`
 - Create: `docs/product/humanizer-policy.md`
 - Create: `tests/fixtures/humanizer/`
-- Modify: `examples/organization-docs/skills/`
+- Create: `tests/test_humanizer_examples.py`
+- Modify: `examples/organization-docs/skills/` and selected brands' `voice.approved_examples`
+- Modify: `internal/document/request.go`, `render.go`, and related tests for optional original-text retention
+- Modify: `internal/cli/organization.go`, `root.go`, and document CLI tests for `--pre-humanized-text`
+- Modify: `docs/product/agent-document-runtime.md`
 
 **Interfaces:**
 - Consumes: brand voice and protected-field declarations from Tasks 3 and 5.
 - Produces: portable agent instructions for optional narrative editing; humanizer is not a runtime worker or a required step for every document.
 
-- [ ] Define applicability by document field: narrative prose may be revised; amounts, identifiers, dates, quoted source text, citations, and typed values are protected.
-- [ ] Define Spanish-first behavior and allow each brand profile to supply voice preferences and approved examples.
-- [ ] Require factual preservation and a post-edit validation pass; preserve the pre-humanized text in the run record when configured.
-- [ ] Explicitly exclude detector evasion and fabricated human identity from the skill's goal.
-- [ ] Add skill examples for a report narrative and an invoice description; assert that protected invoice fields remain byte-for-byte unchanged.
-- [ ] Review candidate public Humanizer skills before reuse. Do not copy an external skill wholesale; record source, license, behavior, and chosen adaptation if one is selected.
+- [x] Define applicability by document field: narrative prose may be revised; amounts, identifiers, dates, quoted source text, citations, and typed values are protected.
+- [x] Define Spanish-first behavior and allow each brand profile to supply voice preferences and approved examples.
+- [x] Require factual preservation and a post-edit validation pass; preserve the pre-humanized text in the run record when configured.
+- [x] Explicitly exclude detector evasion and fabricated human identity from the skill's goal.
+- [x] Add skill examples for a report narrative and an invoice description; assert that protected invoice fields remain byte-for-byte unchanged.
+- [x] Review candidate public Humanizer skills before reuse. Do not copy an external skill wholesale; record source, license, behavior, and chosen adaptation if one is selected.
 
 **Acceptance:** The skill improves naturalness only where requested, follows the selected brand voice, and does not alter protected data or make authorship claims.
 

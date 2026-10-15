@@ -14,12 +14,13 @@ import (
 )
 
 type organizationOptions struct {
-	Organization string
-	Operation    string
-	DocumentType string
-	Input        string
-	OutputRoot   string
-	JobID        string
+	Organization     string
+	Operation        string
+	DocumentType     string
+	Input            string
+	OutputRoot       string
+	JobID            string
+	PreHumanizedText string
 }
 
 func parseOrganizationOptions(args []string) (organizationOptions, error) {
@@ -50,6 +51,8 @@ func parseOrganizationOptions(args []string) (organizationOptions, error) {
 			options.OutputRoot = value
 		case "job-id":
 			options.JobID = value
+		case "pre-humanized-text":
+			options.PreHumanizedText = value
 		default:
 			return options, fmt.Errorf("unknown option --%s", name)
 		}
@@ -162,7 +165,17 @@ func runDocument(ctx context.Context, args []string, format string, stdin io.Rea
 		writeError(stderr, format, "profile_error", err.Error())
 		return ExitError
 	}
-	result, err := document.RenderDocument(ctx, document.RenderRequest{Profile: profile, Input: input, InputReferences: []string{options.Input}, OutputRoot: options.OutputRoot, JobID: options.JobID})
+	var preHumanizedText *string
+	if options.PreHumanizedText != "" {
+		contents, readErr := os.ReadFile(options.PreHumanizedText)
+		if readErr != nil {
+			writeError(stderr, format, "input_error", fmt.Sprintf("read pre-humanized text: %v", readErr))
+			return ExitError
+		}
+		text := string(contents)
+		preHumanizedText = &text
+	}
+	result, err := document.RenderDocument(ctx, document.RenderRequest{Profile: profile, Input: input, InputReferences: []string{options.Input}, OutputRoot: options.OutputRoot, JobID: options.JobID, PreHumanizedText: preHumanizedText})
 	if err != nil {
 		writeError(stderr, format, "render_error", err.Error())
 		return ExitError

@@ -14,3 +14,5 @@ visual:
 voice:
   language: es
   tone: didáctico, cercano y respetuoso
+  approved_examples:
+    - Cada concepto se explica paso a paso antes de aplicarlo en un ejercicio.

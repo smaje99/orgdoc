@@ -63,6 +63,29 @@ func TestRunContextCancelsDocumentWorker(t *testing.T) {
 	}
 }
 
+func TestDocumentRenderCanPersistPreHumanizedTextByRequest(t *testing.T) {
+	root := writeDocumentOrganization(t)
+	outputRoot := filepath.Join(t.TempDir(), "renders")
+	originalPath := filepath.Join(t.TempDir(), "original.md")
+	original := "Texto previo a la edición.\n"
+	if err := os.WriteFile(originalPath, []byte(original), 0o600); err != nil {
+		t.Fatal(err)
+	}
+	var stdout, stderr bytes.Buffer
+	args := []string{"document", "render", "--organization", root, "--operation", "consulting", "--document-type", "invoice", "--input", "-", "--output-root", outputRoot, "--job-id", "cli-run", "--pre-humanized-text", originalPath}
+	code := Run(args, strings.NewReader(`{"invoice_number":"F-1","grand_total":42}`), &stdout, &stderr)
+	if code != ExitSuccess {
+		t.Fatalf("Run() = (%d, %q)", code, stderr.String())
+	}
+	manifest, err := os.ReadFile(filepath.Join(outputRoot, "cli-run", "run-manifest.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(manifest), `"pre_humanized_text": "Texto previo a la edición.\n"`) {
+		t.Fatalf("original text was not preserved: %s", manifest)
+	}
+}
+
 func writeDocumentOrganization(t *testing.T) string {
 	t.Helper()
 	root := t.TempDir()

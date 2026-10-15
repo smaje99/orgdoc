@@ -63,7 +63,7 @@ Options:
   organization validate [--organization PATH]   Validate organization profiles.
   brands list [--organization PATH]             List organization brands.
   context --operation ID --document-type ID      Build selected renderer context.
-  document render --operation ID --document-type ID --input PATH --output-root PATH
+  document render --operation ID --document-type ID --input PATH --output-root PATH [--pre-humanized-text PATH]
 
 Exit codes: 0 success, 1 runtime error, 2 usage error.
 `

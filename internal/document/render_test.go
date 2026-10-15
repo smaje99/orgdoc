@@ -86,6 +86,23 @@ func TestRenderDocumentPersistsFailedStageManifest(t *testing.T) {
 	}
 }
 
+func TestRenderDocumentPreservesPreHumanizedTextWhenConfigured(t *testing.T) {
+	_, profile := rendererFixture(t)
+	original := "El informe presenta resultados concretos."
+	request := RenderRequest{Profile: profile, Input: map[string]any{"invoice_number": "F-1", "grand_total": 125.0}, OutputRoot: filepath.Join(t.TempDir(), "runs"), JobID: "run-001", PreHumanizedText: &original}
+	result, err := RenderDocument(context.Background(), request)
+	if err != nil {
+		t.Fatal(err)
+	}
+	manifest, err := os.ReadFile(result.ManifestPath)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !strings.Contains(string(manifest), `"pre_humanized_text": "El informe presenta resultados concretos."`) {
+		t.Fatalf("original text was not persisted in run manifest: %s", manifest)
+	}
+}
+
 func rendererFixture(t *testing.T) (string, orgconfig.ResolvedProfile) {
 	t.Helper()
 	root := t.TempDir()

@@ -58,7 +58,8 @@ func RenderDocument(ctx context.Context, request RenderRequest) (DocumentResult,
 		OperationID: request.Profile.Operation.ID, BrandID: request.Profile.Brand.ID, DocumentTypeID: request.Profile.DocumentType.ID,
 		ProfileVersions: ProfileVersions{OrganizationSchema: request.Profile.Organization.SchemaVersion, OperationSchema: request.Profile.Operation.SchemaVersion, Brand: request.Profile.Brand.Version, DocumentType: request.Profile.DocumentType.Version},
 		CapabilityID:    cap.ID, CapabilityVersion: cap.Version, InputReferences: append([]string{}, request.InputReferences...), OutputPaths: []string{}, Diagnostics: []worker.WorkerDiagnostic{},
-		Stages: []RunStage{{Name: "validate_input", Status: "succeeded", StartedAt: startedAt, EndedAt: startedAt}, {Name: "resolve_capability", Status: "succeeded", StartedAt: startedAt, EndedAt: startedAt}},
+		PreHumanizedText: request.PreHumanizedText,
+		Stages:           []RunStage{{Name: "validate_input", Status: "succeeded", StartedAt: startedAt, EndedAt: startedAt}, {Name: "resolve_capability", Status: "succeeded", StartedAt: startedAt, EndedAt: startedAt}},
 	}
 	if request.Runner == nil {
 		request.Runner = worker.NewRunner(nil, 5*time.Minute)

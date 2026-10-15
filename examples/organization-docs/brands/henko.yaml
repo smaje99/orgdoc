@@ -20,3 +20,5 @@ voice:
   avoid:
     - afirmaciones sin respaldo
     - tecnicismos innecesarios
+  approved_examples:
+    - El equipo puede revisar el avance y los riesgos al cierre de cada semana.

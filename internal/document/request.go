@@ -6,12 +6,13 @@ import (
 )
 
 type RenderRequest struct {
-	Profile         orgconfig.ResolvedProfile
-	Input           any
-	InputReferences []string
-	OutputRoot      string
-	JobID           string
-	Runner          *worker.Runner
+	Profile          orgconfig.ResolvedProfile
+	Input            any
+	InputReferences  []string
+	OutputRoot       string
+	JobID            string
+	PreHumanizedText *string
+	Runner           *worker.Runner
 }
 
 type RunStatus string
@@ -47,6 +48,7 @@ type RunManifest struct {
 	OutputPaths       []string                  `json:"output_paths"`
 	Stages            []RunStage                `json:"stages"`
 	Diagnostics       []worker.WorkerDiagnostic `json:"diagnostics"`
+	PreHumanizedText  *string                   `json:"pre_humanized_text,omitempty"`
 }
 
 type ProfileVersions struct {

@@ -1,0 +1,4 @@
+{
+  "description": "Configuración inicial del flujo de facturación y revisión de su funcionamiento.",
+  "protected_fields_json": "{\"invoice_number\":\"HT-2026-051\",\"issue_date\":\"2026-10-14\",\"customer_tax_id\":\"900000000-1\",\"quantity\":2.00,\"unit_price\":175000.00,\"tax_rate\":0.19,\"subtotal\":350000.00,\"tax_total\":66500.00,\"grand_total\":416500.00,\"currency\":\"COP\"}"
+}
