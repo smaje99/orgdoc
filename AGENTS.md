@@ -43,6 +43,10 @@ The existing `media-report-cli` Python package (`media_report`, command `media-r
 
 - Go: `gofmt -w`, `go vet ./...`, `go test ./...`
 - Legacy Python while present: `uv sync --extra dev`, `uv run pytest`, `uv run ruff check .`, `uv run ruff format .`, `uv run python -m build`, `uv run twine check dist/*`
+- Release candidate: `scripts/build-release.sh`, `(cd build/release && sha256sum -c SHA256SUMS)`, and `scripts/smoke-release.sh build/release/orgdoc-<version>-linux-amd64.tar.gz`
+- Release automation: tag `v<VERSION>` using the root `VERSION` value; `.github/workflows/release.yml` verifies compatibility checks and publishes Linux/macOS archives.
+
+Keep the Python distribution and its `media-report` entry point throughout the migration release. Optional worker environments are installed explicitly and separately. Do not place provider credentials in organization profiles, request fixtures, or release artifacts.
 
 ## Commit Conventions
 

@@ -412,8 +412,8 @@ class ArtifactRootValidator:
     artifact_plan: ArtifactPlan,
   ) -> str | None:
     if missing_outputs := self.missing_outputs_for_stage(
-        artifact_plan=artifact_plan,
-        stage=PipelineStage.REPORT,
+      artifact_plan=artifact_plan,
+      stage=PipelineStage.REPORT,
     ):
       missing_names = ", ".join(path.name for path in missing_outputs)
       return f"required artifacts are missing: {missing_names}."

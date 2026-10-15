@@ -10,6 +10,8 @@
 
 These names are repository decisions, not a claim that distribution or trademark availability has been externally cleared.
 
+See [from-media-report-cli.md](from-media-report-cli.md) for complete command, option, configuration-key, and environment-variable migration mappings.
+
 ## Current public command matrix
 
 | Current command | Current behavior | Migration target | Compatibility decision |

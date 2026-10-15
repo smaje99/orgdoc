@@ -19,7 +19,7 @@ Local media transcription and reporting remain available as optional capabilitie
 - Core distribution: versioned platform binaries and source builds; no replacement PyPI package is published during migration.
 - Compatibility: `media-report` remains available as a shim for one migration release. Removal requires a later major release, command parity, a migration guide, and release notes.
 
-The current Python project remains the compatibility implementation while the new command reaches the migration gates in the plan. The command-by-command mapping and baseline are in [performance-baseline.md](../migration/performance-baseline.md).
+The current Python project remains the compatibility implementation while the new command reaches the migration gates in the plan. See the [migration guide](../migration/from-media-report-cli.md) for command and configuration mappings and [performance-baseline.md](../migration/performance-baseline.md) for measured startup and batch behavior.
 
 ## Product promise
 

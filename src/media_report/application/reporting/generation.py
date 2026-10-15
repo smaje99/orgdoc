@@ -107,8 +107,7 @@ class ReportGenerationService:
     self._metadata_repository.write(running_metadata)
     self._artifact_planner.append_log_event(
       prompt_result.artifacts.root_dir,
-      "report generation started "
-      f"(provider={provider_name}, model={metadata.workflow.llm_model})",
+      f"report generation started (provider={provider_name}, model={metadata.workflow.llm_model})",
     )
 
     try:

@@ -340,12 +340,14 @@ Mixed workload benchmark (100 invoice PDF and local media-scan jobs) completed a
 - Consumes: working Go CLI, profile validation, worker contracts, initial document workers, media capability parity, and benchmark results.
 - Produces: installable CLI binary, optional worker bundles/setup instructions, documented organization repository template, and migration path from `media-report-cli`.
 
-- [ ] Build Linux and macOS binaries and validate checksums/install paths from a clean environment.
-- [ ] Verify core install does not install Python or ML dependencies; verify optional worker setup is explicit and isolated.
-- [ ] Document organization repository initialization, multiple operations/brands, capability discovery, JSON contracts, humanizer use, and media capability setup.
-- [ ] Publish a migration table from every old `media-report` command and config key to the new command/capability or its removal rationale.
-- [ ] Run the full documented checks, CLI integration suite, worker contract suite, rendered PDF visual checks, and performance benchmarks before release.
-- [ ] Remove old Python CLI packaging only in a major release after compatibility period and migration guide are complete.
+- [x] Build Linux and macOS binaries for amd64/arm64; validate checksums, clean-PATH smoke behavior, and user-local installer paths.
+- [x] Verify core installation needs no Python/ML runtime and optional worker setup remains explicit and isolated.
+- [x] Document organization repository initialization, multiple operations/brands, capability discovery, JSON contracts, Humanizer use, and media capability setup.
+- [x] Publish a migration table for every old `media-report` command, option, TOML key, and environment override, including missing replacements.
+- [x] Run Go and Python checks, CLI/worker integration, source and wheel builds, Twine checks, invoice PDF visual review for both brands, report Markdown provenance review, and recorded startup/batch benchmarks.
+- [x] Keep the Python CLI packaging and command for the compatibility period; document removal as a later major-release action after parity and migration communication.
+
+Release candidate checks on 2026-10-14: Go tests/vet passed; Python suite passed (168 tests, 4 subtests); Ruff check/format passed; sdist/wheel build and Twine 7.0 checks passed; all four Linux/macOS archives passed SHA-256 verification; clean-PATH Linux smoke and temporary user-local install passed. Invoice PDFs were visually reviewed for both brands, including a four-page long invoice; narrative reports were reviewed as Markdown because that is the current OrgDoc renderer contract. The release workflow is prepared but no release tag or public release was created.
 
 **Acceptance:** A new user can install the core runtime, validate an organization repository, discover capabilities, produce an invoice and report under either brand, and optionally enable media workers without installing unrelated dependencies.
 

@@ -115,8 +115,7 @@ def test_generate_report_uses_packaged_template_and_persists_markdown(tmp_path: 
 
   assert provider.calls
   assert (
-    "Create a technical Markdown report with concise, factual language."
-    in result.rendered_prompt
+    "Create a technical Markdown report with concise, factual language." in result.rendered_prompt
   )
   assert (
     result.response_path.read_text(encoding="utf-8")

@@ -1,215 +1,117 @@
-# media-report-cli
+# OrgDoc Runtime
 
-`media-report-cli` is a Python package and console application for turning local audio or video files into structured reporting artifacts.
+OrgDoc Runtime is a local Go CLI for agents and people that need to discover document capabilities, apply an organization's brand and document rules, and produce traceable artifacts. Organization repositories can define multiple operations and brands. The selected operation chooses the brand; the renderer records the profile, capability, and input versions used for each run.
 
-The distribution target is PyPI. The import package is `media_report`, and the global command is `media-report`.
+The Go core is independent of Python, media models, and network services. Optional document and media workers run in isolated environments and are installed only when needed. The existing `media-report-cli` Python package and `media-report` command remain available as the media compatibility implementation during migration.
 
-## Status
+## Install OrgDoc
 
-Version `0.1.0` is a bootstrap release focused on packaging, configuration, CLI ergonomics, artifact planning, and developer scaffolding.
+Download a release archive for Linux or macOS from the [GitHub Releases page](https://github.com/smaje99/media-report-cli/releases). Each archive includes the `orgdoc` executable, `INSTALL.md`, and `LICENSE`; `SHA256SUMS` is published alongside the archives.
 
-- Official platforms: Linux and macOS
-- Windows: experimental, best-effort only
+To build all supported binaries from a source checkout:
 
-## Installation
-
-End-user installation should prefer isolated tool environments:
-
-```bash
-uv tool install media-report-cli
+```sh
+scripts/build-release.sh
 ```
 
-or
+To verify an extracted Linux release package without Python or other workers on `PATH`:
 
-```bash
-pipx install media-report-cli
+```sh
+scripts/smoke-release.sh build/release/orgdoc-0.1.0-linux-amd64.tar.gz
 ```
 
-Repository-local development:
+See [installation details](INSTALL.md) for checksum verification, install paths, supported targets, and worker setup.
 
-```bash
-uv sync --extra dev
-uv run media-report doctor
+## Start with an organization repository
+
+Copy the example repository and validate it:
+
+```sh
+cp -R examples/organization-docs "$HOME/orgdoc-organization"
+orgdoc organization validate --organization "$HOME/orgdoc-organization" --format json
+orgdoc brands list --organization "$HOME/orgdoc-organization" --format json
+orgdoc capabilities list --organization "$HOME/orgdoc-organization" --format json
 ```
 
-To enable local transcription support during development:
+The example defines Henko Technologies and Henko Academy brands, several operations, invoice and narrative-report profiles, and a Humanizer skill. Each operation selects one brand explicitly. Read [the product guide](docs/product/agent-document-runtime.md) for the profile format and agent workflows.
 
-```bash
-uv sync --extra transcription
+## Render a document
+
+Install the invoice worker in its isolated environment, then make its entry point available on `PATH`:
+
+```sh
+uv sync --project workers/python/reportlab-invoice
+export PATH="$PWD/workers/python/reportlab-invoice/.venv/bin:$PATH"
 ```
 
-Repository-local tool install:
+Render an example invoice request:
 
-```bash
-uv tool install .
+```sh
+orgdoc document render \
+  --organization "$HOME/orgdoc-organization" \
+  --operation consulting \
+  --document-type invoice \
+  --input tests/fixtures/documents/invoice.json \
+  --output-root ./artifacts \
+  --format json
 ```
 
-## CLI Surface
+The narrative-report worker is also optional and has its own setup in [the report worker guide](workers/python/narrative-report/README.md). The CLI can render with a selected operation/brand without installing those workers; only the chosen renderer must be installed to produce its artifact.
 
-```bash
-media-report process PATH [OPTIONS]
-media-report transcribe PATH [OPTIONS]
-media-report report PATH [OPTIONS]
-media-report doctor
-media-report config init
-media-report config show
-media-report templates list
+## Use the Humanizer skill
+
+Humanizer is an agent skill, not a renderer or an automatic text-rewriting stage. Before editing narrative prose, an agent should read the organization's `skills/humanizer.md`, resolve the operation and brand, and respect the document type's `protected_fields`. Preserve amounts, identifiers, dates, quotations, citations, and typed values. When enabled by the organization, `--pre-humanized-text PATH` records the original prose in the run manifest. See [the Humanizer policy](docs/product/humanizer-policy.md).
+
+## Optional local media workflows
+
+The media pack provides `media-scan`, `media-transcription`, `media-report`, and `media-pdf` capabilities. Set up only the worker environments required by a workflow:
+
+```sh
+uv sync --project workers/python/media-transcription
+uv sync --project workers/python/media-report
 ```
 
-## Bootstrap Contract
+See [the media worker guide](capabilities/media/README.md) for FFmpeg, Pandoc, TeX, model, and compatibility artifact requirements. Transcription loads a model only when a transcription job starts. OrgDoc does not download models or install worker environments automatically.
 
-Version `0.1.0` treats the current bootstrap CLI surface as stable:
-
-- Root command: `media-report`
-- Stable bootstrap commands: `process`, `doctor`, `config init`, `config show`, `templates list`
-- Public stage command: `transcribe`
-- Public reporting command: `report`
-- Additive evolution only for new public options and commands
-
-`media-report process` keeps all currently visible flags public, with these current semantics:
-
-| Flag group | Flags | Bootstrap status |
-| --- | --- | --- |
-| Active now | `--recursive`, `--resume`, `--template` | Affect discovery, artifact reuse, and execution through transcription today |
-| Deprecated compatibility | `--overwrite` | Deprecated alias for `--resume` during Sprint 2; destructive overwrite is intentionally not exposed yet |
-| Active for planning | `--provider`, `--model`, `--output-format` | Affect planned workflow metadata during default `process`; become effective in reporting flows |
-| Planning selectors | `--only-transcribe`, `--only-report` | `--only-transcribe` executes audio prep plus transcription; `--only-report` requires reusable transcription artifacts, `--resume`, and attempts report plus PDF |
-| Metadata and transcription | `--language` | Passed to transcription and persisted in pipeline metadata |
-
-`media-report transcribe` accepts a single media file or a reusable artifact directory and exposes:
-
-- `--language`
-- `--model`
-- `--overwrite`
-
-`media-report report` accepts a reusable artifact directory or a media-file alias that resolves to
-its sibling artifact root, and exposes:
-
-- `--template`
-- `--provider`
-- `--model`
-- `--overwrite`
-
-Resume validation currently assumes a sibling artifact directory named `<media_stem>_media_report`
-and requires a valid `metadata.json` plus the minimum outputs for every reused completed stage:
-
-| Stage | Required files for reuse |
-| --- | --- |
-| `extract_audio` | `audio_extracted.wav` |
-| `normalize_audio` | `audio_normalized.wav` |
-| `transcribe` | `transcript_raw.txt`, `transcript_segments.json` |
-| `report` | `prompt_used.md`, `llm_response_raw.txt`, `report.md` |
-| `pdf` | `report.pdf` |
-
-Example usage:
-
-```bash
-media-report process ./meeting.mp4
-media-report process ./meeting.mp4 --resume
-media-report process ./recordings --recursive --template meeting
-media-report process ./lecture.mp3 --provider openai-compatible --model gpt-4.1-mini --language es
-media-report process ./lecture.mp3 --resume --only-report
-media-report transcribe ./lecture.mp3 --language es
-media-report transcribe ./lecture_media_report --overwrite
-media-report report ./lecture_media_report --template technical_report
-media-report report ./lecture.mp3 --provider openai-compatible --model gpt-4.1-mini
-media-report doctor
-media-report config init
-```
-
-## What 0.1.0 Does
-
-- Validates media input paths
-- Detects supported audio and video files
-- Creates per-file artifact directories next to the source media
-- Executes `extract_audio`, `normalize_audio`, and `transcribe` during `process`
-- Exposes `transcribe` as a reusable single-input stage command
-- Exposes `report` as a reusable single-input stage command over completed transcription artifacts
-- Persists `transcript_raw.txt` and `transcript_segments.json`
-- Persists `prompt_used.md`, `llm_response_raw.txt`, and `report.md`
-- Persists `report.pdf` for reporting flows when Pandoc and a supported TeX engine are available
-- Writes and updates `metadata.json` and `pipeline.log`
-- Reuses valid sibling artifact directories when invoked with `--resume`
-- Validates existing metadata strictly before executing a resumed run
-- Prefers GPU-backed transcription when available and falls back to CPU with traceability
-- Prints per-stage decisions and final stage status for the active flow
-- Loads packaged prompt and PDF templates from installed package resources
-- Checks external tooling availability with `doctor`
-- Manages config at `~/.config/media-report/config.toml`
-
-Audio preparation through FFmpeg, local transcription through `faster-whisper`, and LLM-backed
-Markdown and PDF report generation are wired into the current reporting flows. Default `process`
-still stops operationally at transcription in `0.1.0`; PDF execution is currently reached through
-`report` and `process --resume --only-report` over reusable artifacts.
-
-## External Dependencies
-
-The package intentionally keeps heavyweight tools external to the Python dependency graph:
-
-- `ffmpeg`
-- `pandoc`
-- `xelatex` or `lualatex`
-- `ollama`
-
-Optional Python dependencies:
-
-- `faster-whisper` via the `transcription` extra
-
-For local inference stages, the intended direction is to prefer GPU-backed execution when the
-selected provider supports it, while keeping CPU fallback available for supported Linux and macOS
-installs.
-
-`media-report doctor` reports whether the optional transcription capability is available and
-shows the install hint when it is not.
-
-## Configuration
-
-Config file path:
+## Agent CLI
 
 ```text
-~/.config/media-report/config.toml
+orgdoc --help
+orgdoc --version
+orgdoc organization validate --organization PATH --format json
+orgdoc capabilities list --organization PATH --format json
+orgdoc capabilities describe ID --organization PATH --format json
+orgdoc brands list --organization PATH --format json
+orgdoc context --organization PATH --operation ID --document-type ID --format json
+orgdoc document render --organization PATH --operation ID --document-type ID --input INPUT.json --output-root ARTIFACTS --format json
+orgdoc batch run JOBS.json --max-workers 4 --format json
 ```
 
-Supported environment variables:
+Every command accepts stable JSON output where supported. Batch results preserve input order, and resource-class limits keep GPU/model and memory-heavy workers at one active job by default. The [runtime guide](docs/product/agent-document-runtime.md) describes request schemas and chaining media capabilities.
 
-- `MEDIA_REPORT_LLM_PROVIDER`
-- `MEDIA_REPORT_LLM_MODEL`
-- `MEDIA_REPORT_OPENAI_API_KEY`
-- `MEDIA_REPORT_OPENAI_BASE_URL`
-- `MEDIA_REPORT_OLLAMA_BASE_URL`
-- `MEDIA_REPORT_WHISPER_MODEL`
-- `MEDIA_REPORT_WHISPER_DEVICE`
-- `MEDIA_REPORT_OUTPUT_FORMAT`
-- `MEDIA_REPORT_LOG_LEVEL`
+## Compatibility and migration
 
-Environment variables override file values. `media-report config show` always redacts secrets.
-
-## Privacy
-
-The default local path is designed around local tools such as Ollama and, later, faster-whisper.
-
-- Secrets are redacted in CLI output.
-- Remote processing is opt-in by provider choice.
-- The CLI warns when a remote LLM provider is selected.
-- Intermediate artifacts are preserved for traceability unless future workflow stages explicitly change that policy.
-
-## Packaging Notes
-
-Bundled prompt templates and the default LaTeX template are loaded with `importlib.resources` so they work from:
-
-- `uv tool install media-report-cli`
-- `pipx install media-report-cli`
-- `pip install media-report-cli`
+The `media-report` command and Python distribution remain supported during the migration release. Existing commands and settings are documented in the [migration guide](docs/migration/from-media-report-cli.md), including the target OrgDoc command or capability and any setting that has no core replacement yet. Do not remove the Python package until a later major release after parity and migration communication.
 
 ## Development
 
-```bash
+Go checks:
+
+```sh
+gofmt -w cmd internal
+go vet ./...
+go test ./...
+```
+
+Legacy Python compatibility checks:
+
+```sh
 uv sync --extra dev
-uv run pytest
 uv run ruff check .
-uv run ruff format .
+uv run ruff format --check .
+uv run pytest
 uv run python -m build
 uv run twine check dist/*
 ```
 
-See [docs/release.md](docs/release.md) and [AGENTS.md](AGENTS.md) for project-specific rules.
+See [release checks](docs/release.md) and [AGENTS.md](AGENTS.md) for the migration and contribution rules.

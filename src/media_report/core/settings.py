@@ -58,6 +58,8 @@ ENV_FIELD_MAP = {
   "MEDIA_REPORT_OUTPUT_FORMAT": "output_format",
   "MEDIA_REPORT_LOG_LEVEL": "log_level",
 }
+
+
 def redact_settings(settings: AppSettings) -> dict[str, str]:
   return settings.to_display_dict()
 

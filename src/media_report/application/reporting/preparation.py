@@ -124,11 +124,7 @@ class PromptRunPreparer:
     if recovery_reason is not None:
       stage_decisions = _replace_stage_decision_reason(
         stage_decisions=stage_decisions,
-        stage=(
-          PipelineStage.REPORT
-          if report_recovery_reason is not None
-          else PipelineStage.PDF
-        ),
+        stage=(PipelineStage.REPORT if report_recovery_reason is not None else PipelineStage.PDF),
         reason=recovery_reason,
       )
 

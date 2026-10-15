@@ -1,16 +1,19 @@
 # Distribution Context
 
-## Distribution Target
+## Distribution Targets
 
-The primary distribution channel is PyPI.
+- OrgDoc Runtime core: checksummed GitHub release archives for Linux and macOS.
+- Python compatibility command: PyPI distribution `media-report-cli` during the migration release.
+- Optional workers: isolated, explicit environment setup under `workers/python/`.
 
 ## Installation Modes
 
-- `uv tool install media-report-cli`
-- `pipx install media-report-cli`
-- `pip install media-report-cli`
+- `scripts/install-orgdoc.sh VERSION` or download a verified GitHub release archive.
+- `uv tool install media-report-cli` for the compatibility command.
+- `pipx install media-report-cli` for the compatibility command.
+- `pip install media-report-cli` for the compatibility library.
 
-The first two are the recommended end-user options because they isolate dependencies.
+The Python tool installs are recommended only when the legacy media-report workflow is needed. The core OrgDoc CLI is a standalone Go binary and includes no Python dependencies.
 
 ## Packaging Requirements
 

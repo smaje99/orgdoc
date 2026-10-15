@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  verify-and-package:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
+        with:
+          go-version: '1.27.x'
+          cache: true
+      - uses: astral-sh/setup-uv@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Verify tag matches VERSION
+        run: test "${GITHUB_REF_NAME#v}" = "$(cat VERSION)"
+      - name: Verify Go runtime
+        run: |
+          test -z "$(gofmt -l cmd internal)"
+          go vet ./...
+          go test ./...
+      - name: Verify compatibility package
+        run: |
+          uv sync --locked --extra dev
+          uv run ruff check .
+          uv run ruff format --check .
+          uv run pytest
+          uv run python -m build
+          uv run twine check dist/*
+      - name: Build release archives
+        run: scripts/build-release.sh "${GITHUB_REF_NAME#v}"
+      - name: Smoke test Linux release package
+        run: scripts/smoke-release.sh "build/release/orgdoc-$(cat VERSION)-linux-amd64.tar.gz"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: build/release/*
