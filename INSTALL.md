@@ -25,6 +25,8 @@ Replace the archive name for your target. Add `$HOME/.local/bin` to `PATH` if ne
 
 The source checkout also includes `scripts/install-orgdoc.sh VERSION`, which downloads the selected release asset from `smaje99/orgdoc`, verifies its SHA-256 checksum, and installs to `$HOME/.local/bin` by default. Set `INSTALL_DIR` to choose another user-writable directory. Set `ORGDOC_REPOSITORY` to use a mirror, or `ORGDOC_RELEASE_BASE_URL` to install from a local release directory during testing.
 
+The extracted core archive also includes `install-worker.sh`. After installing `uv` and a supported Python version, install only a needed worker with `./install-worker.sh reportlab-invoice 0.1.0`, replacing `0.1.0` with the OrgDoc release version. This verifies the worker bundle checksum, creates an isolated environment under the user data directory, and links its commands into `$HOME/.local/bin`. FFmpeg, Pandoc/TeX, GPU drivers, and ML models remain separate prerequisites and are not installed by this script.
+
 ## Build from source
 
 Install Go 1.27 or later and run:

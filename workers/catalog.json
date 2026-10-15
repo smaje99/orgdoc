@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "workers": [
+    {
+      "id": "reportlab-invoice",
+      "project_path": "workers/python/reportlab-invoice",
+      "capabilities": ["invoice-pdf"],
+      "entrypoints": ["orgdoc-render-invoice"],
+      "minimum_python": "3.10",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": [],
+      "include_compat_runtime": false
+    },
+    {
+      "id": "narrative-report",
+      "project_path": "workers/python/narrative-report",
+      "capabilities": ["report-markdown"],
+      "entrypoints": ["orgdoc-render-report"],
+      "minimum_python": "3.10",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": [],
+      "include_compat_runtime": false
+    },
+    {
+      "id": "media-report",
+      "project_path": "workers/python/media-report",
+      "capabilities": ["media-report", "media-pdf"],
+      "entrypoints": ["orgdoc-media-report", "orgdoc-media-pdf"],
+      "minimum_python": "3.11",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": [
+        "pandoc (for PDF output)",
+        "xelatex or lualatex (for PDF output)"
+      ],
+      "include_compat_runtime": true
+    },
+    {
+      "id": "media-transcription",
+      "project_path": "workers/python/media-transcription",
+      "capabilities": ["media-scan", "media-transcription"],
+      "entrypoints": ["orgdoc-media-scan", "orgdoc-media-transcription"],
+      "minimum_python": "3.11",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": ["ffmpeg"],
+      "include_compat_runtime": true
+    }
+  ]
+}

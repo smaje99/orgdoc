@@ -31,7 +31,7 @@ for TARGET in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
       -o "$PACKAGE_DIR/orgdoc" \
       ./cmd/orgdoc
   )
-  cp "$ROOT/INSTALL.md" "$ROOT/LICENSE" "$PACKAGE_DIR/"
+  cp "$ROOT/INSTALL.md" "$ROOT/LICENSE" "$ROOT/scripts/install-worker.sh" "$PACKAGE_DIR/"
   tar -C "$PACKAGE_DIR" -czf "$OUTPUT_DIR/$ASSET" .
 done
 

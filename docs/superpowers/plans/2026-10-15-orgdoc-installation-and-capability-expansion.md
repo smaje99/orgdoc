@@ -54,7 +54,7 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 
 - `scripts/build-release.sh`: cross-compile and package the four core targets.
 - `scripts/install-orgdoc.sh`: download, checksum-verify, and install the core release.
-- `scripts/package-workers.sh`: create source bundles for the selected worker projects.
+- `scripts/package-workers.py`: create source bundles for the selected worker projects from `workers/catalog.json`.
 - `scripts/install-worker.sh`: download one versioned worker bundle, verify its checksum, install it into a user-owned data directory, and expose its entrypoints.
 - `.github/workflows/release.yml`: verify, package, smoke-test, and upload all release assets.
 - `internal/cli/doctor.go`: inspect the selected organization's declared worker executables and system prerequisites.
@@ -92,7 +92,8 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 ### Task 2: Package optional worker bundles for GitHub Releases
 
 **Files:**
-- Create: `scripts/package-workers.sh`
+- Create: `workers/catalog.json`
+- Create: `scripts/package-workers.py`
 - Create: `scripts/install-worker.sh`
 - Modify: `workers/python/*/pyproject.toml` and lockfiles only where required for standalone bundles
 - Modify: `workers/python/*/README.md`
@@ -100,17 +101,18 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Test: worker packaging/install smoke fixtures
 
 **Interfaces:**
-- Bundle names: `orgdoc-worker-<capability>-<version>-source.tar.gz`.
+- Bundle names: `orgdoc-worker-<worker-project-id>-<orgdoc-release-version>-source.tar.gz`; `<orgdoc-release-version>` matches the root `VERSION`/GitHub tag, and each project bundle can expose one or more capability IDs.
 - Each bundle contains only the worker project, its lockfile, required source/resources, `LICENSE`/attribution where applicable, capability manifest/schema, and setup instructions. It excludes `.venv`, secrets, caches, and model data.
-- `scripts/install-worker.sh <capability-id> <version>` downloads that release asset, verifies it against `SHA256SUMS`, provisions one isolated environment under `${XDG_DATA_HOME:-$HOME/.local/share}/orgdoc/workers/<capability-id>/<version>`, and exposes declared entrypoints in the user-local binary directory.
+- `scripts/install-worker.sh <worker-project-id> <orgdoc-release-version>` downloads that release asset, verifies it against `SHA256SUMS`, provisions one isolated environment under `${XDG_DATA_HOME:-$HOME/.local/share}/orgdoc/workers/<worker-project-id>/<orgdoc-release-version>`, and exposes declared entrypoints in the user-local binary directory.
+- One bundle is produced per Python worker project, not per capability: current media projects each provide two entrypoints that share one environment. This avoids duplicate dependency installation; capabilities in one project therefore move together at release time.
 
-- [ ] Add bundle manifests mapping a capability ID to worker project, entrypoints, minimum Python/uv versions, and external system prerequisites.
-- [ ] Package each current Python worker from a temporary extracted bundle and prove installation does not depend on the source checkout.
-- [ ] Include the legacy `media_report` package and its packaged resources inside media worker bundles, or replace the local path dependency with an independently distributable pinned dependency; choose one approach and validate the archive in a clean temporary directory.
-- [ ] Keep FFmpeg, Pandoc/TeX, GPU runtimes, and model weights outside bundles; report these as explicit prerequisites.
-- [ ] Publish worker bundles beside core archives and add them to the same checksum manifest.
-- [ ] Test that installing one worker does not install other worker environments and does not modify the core binary.
-- [ ] Commit as `📦 build(workers): publish optional worker bundles`.
+- [x] Add `workers/catalog.json` mapping each worker project ID to its source directory, capability IDs, package-relative layout, entrypoints, minimum Python/uv versions, and external system prerequisites.
+- [x] Package each current Python worker from a temporary extracted bundle and prove installation does not depend on the source checkout.
+- [x] Include the legacy `media_report` package and its packaged resources inside media worker bundles, or replace the local path dependency with an independently distributable pinned dependency; choose one approach and validate the archive in a clean temporary directory.
+- [x] Keep FFmpeg, Pandoc/TeX, GPU runtimes, and model weights outside bundles; report these as explicit prerequisites.
+- [x] Publish one source bundle per worker project beside core archives and add all of them to the same checksum manifest.
+- [x] Test that installing one worker does not install other worker environments and does not modify the core binary.
+- [x] Commit as `📦 build(workers): publish optional worker bundles`.
 
 ### Task 3: Add worker diagnostics and guided setup
 
@@ -231,7 +233,7 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 
 **Files:**
 - Modify: `.github/workflows/release.yml`
-- Modify: `scripts/build-release.sh`, `scripts/package-workers.sh`, release smoke scripts
+- Modify: `scripts/build-release.sh`, `scripts/package-workers.py`, release smoke scripts
 - Modify: `docs/release.md`, `README.md`, `CHANGELOG.md`
 
 **Interfaces:**
