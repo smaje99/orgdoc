@@ -40,6 +40,7 @@ type DocumentType struct {
 	ID                 string   `yaml:"id" json:"id"`
 	Name               string   `yaml:"name" json:"name"`
 	Version            string   `yaml:"version" json:"version"`
+	RequestSchema      string   `yaml:"request_schema" json:"request_schema"`
 	RequiredFields     []string `yaml:"required_fields" json:"required_fields"`
 	ProtectedFields    []string `yaml:"protected_fields" json:"protected_fields"`
 	RendererCapability string   `yaml:"renderer_capability" json:"renderer_capability"`

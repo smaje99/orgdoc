@@ -2,6 +2,7 @@ schema_version: 1
 id: report
 name: Informe narrativo
 version: 1.0.0
+request_schema: schemas/report-request.schema.json
 required_fields:
   - title
   - source_references

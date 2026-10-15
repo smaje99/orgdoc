@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "organization": {
+    "id": "henko",
+    "name": "Henko Technologies"
+  },
+  "operation": {
+    "id": "consulting",
+    "name": "Consultoría",
+    "brand_id": "henko",
+    "legal_name": "Henko Technologies S.A.S."
+  },
+  "brand": {
+    "id": "henko",
+    "name": "henko",
+    "version": "2.1.0",
+    "assets": [
+      "brands/henko.svg"
+    ],
+    "visual": {
+      "primary_color": "#173F5F"
+    },
+    "voice": {
+      "language": "es",
+      "tone": "claro"
+    }
+  },
+  "document_type": {
+    "id": "invoice",
+    "name": "Factura",
+    "version": "1.0.0",
+    "required_fields": [
+      "number",
+      "total"
+    ],
+    "protected_fields": [
+      "total"
+    ]
+  },
+  "renderer_capability_id": "invoice-pdf"
+}

@@ -2,6 +2,7 @@ schema_version: 1
 id: invoice
 name: Factura de venta
 version: 1.0.0
+request_schema: schemas/invoice-request.schema.json
 required_fields:
   - invoice_number
   - issue_date

@@ -31,4 +31,16 @@ Capabilities are executable code owned by the organization repository and run wi
 
 ## Profile format v1
 
-`organization.yaml` and every brand, operation, and document-type profile declare `schema_version: 1`. Brand and document-type profiles also declare a version string for artifact provenance. The organization manifest lists profile files using paths relative to the organization repository; an operation selects its brand with `brand_id`, and each document type declares a renderer capability ID. The version 1 schemas are packaged with the CLI, so validation works offline and against the exact schema release used by the runtime.
+`organization.yaml` and every brand, operation, and document-type profile declare `schema_version: 1`. Brand and document-type profiles also declare a version string for artifact provenance. The organization manifest lists profile files using paths relative to the organization repository; an operation selects its brand with `brand_id`, and each document type declares a request JSON Schema and renderer capability ID. OrgDoc validates that request schema and the document input before it creates a run directory or starts a worker. The version 1 profile schemas are packaged with the CLI, so profile validation works offline and against the exact schema release used by the runtime.
+
+## Agent CLI
+
+```text
+orgdoc organization validate --organization PATH --format json
+orgdoc capabilities list --organization PATH --format json
+orgdoc brands list --organization PATH --format json
+orgdoc context --organization PATH --operation ID --document-type ID --format json
+orgdoc document render --organization PATH --operation ID --document-type ID --input INPUT.json --output-root ARTIFACTS --format json
+```
+
+Each render uses a new `job_id` directory and writes `run-manifest.json` with selected profile and capability versions, input references, timestamps, output paths, and stage statuses. Reusing an existing job ID fails without changing its artifacts. Send `--input -` to read the JSON request from standard input.

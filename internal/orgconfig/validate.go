@@ -2,8 +2,11 @@ package orgconfig
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 	"strings"
+
+	orgschemas "github.com/smaje/orgdoc/schemas"
 )
 
 // ValidateOrganization reports deterministic, location-aware profile errors.
@@ -121,6 +124,17 @@ func validateOrganization(organization Organization) []Diagnostic {
 		documentIDs[documentType.ID] = true
 		if documentType.Version == "" {
 			add(file, "version", "required", "document profile version is required")
+		}
+		if documentType.RequestSchema == "" {
+			add(file, "request_schema", "required", "request schema path is required")
+		} else if schemaPath, err := safePath(organization.Root, documentType.RequestSchema); err != nil {
+			add(file, "request_schema", "invalid_request_schema", err.Error())
+		} else if contents, err := os.ReadFile(schemaPath); err != nil {
+			add(file, "request_schema", "invalid_request_schema", fmt.Sprintf("read request schema: %v", err))
+		} else {
+			if err := orgschemas.ValidateSchemaBytes(contents); err != nil {
+				add(file, "request_schema", "invalid_request_schema", err.Error())
+			}
 		}
 		if len(documentType.RequiredFields) == 0 {
 			add(file, "required_fields", "required", "at least one required field must be declared")

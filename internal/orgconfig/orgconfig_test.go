@@ -114,6 +114,20 @@ func TestValidateOrganizationUsesJSONSchemaAndReportsFieldLocation(t *testing.T)
 	}
 }
 
+func TestValidateOrganizationCompilesDocumentRequestSchemas(t *testing.T) {
+	root := t.TempDir()
+	files := fixtureFiles(map[string]string{
+		"brands/henko.yaml":           brandYAML("henko", ""),
+		"operations/consulting.yaml":  operationYAML("consulting", "henko"),
+		"document-types/invoice.yaml": documentTypeYAML("invoice"),
+	})
+	files["schemas/invoice.schema.json"] = `{"type":"not-a-json-schema-type"}`
+	writeFixture(t, root, files)
+	if diagnostics := ValidateOrganization(root); !hasDiagnosticCode(diagnostics, "document-types/invoice.yaml", "request_schema", "invalid_request_schema") {
+		t.Fatalf("invalid document request schema diagnostic not found: %#v", diagnostics)
+	}
+}
+
 func TestResolveProfileRequiresOneExplicitOperation(t *testing.T) {
 	root := t.TempDir()
 	writeFixture(t, root, fixtureFiles(map[string]string{
@@ -164,6 +178,10 @@ func fixtureFiles(profiles map[string]string) map[string]string {
 	}
 	for path, body := range profiles {
 		files[path] = body
+		if strings.HasPrefix(path, "document-types/") {
+			base := strings.TrimSuffix(filepath.Base(path), filepath.Ext(path))
+			files[filepath.Join("schemas", base+".schema.json")] = `{"type":"object"}`
+		}
 	}
 	return files
 }
@@ -191,7 +209,7 @@ func operationYAML(id, brandID string) string {
 }
 
 func documentTypeYAML(id string) string {
-	return "schema_version: 1\nid: " + id + "\nname: " + id + "\nversion: 1.0.0\nrequired_fields:\n  - number\nprotected_fields:\n  - total\nrenderer_capability: " + id + "-pdf\n"
+	return "schema_version: 1\nid: " + id + "\nname: " + id + "\nversion: 1.0.0\nrequest_schema: schemas/" + id + ".schema.json\nrequired_fields:\n  - number\nprotected_fields:\n  - total\nrenderer_capability: " + id + "-pdf\n"
 }
 
 func writeFixture(t *testing.T, root string, files map[string]string) {

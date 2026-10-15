@@ -206,20 +206,24 @@ Human-readable output is for direct users. Every command used by agents supports
 - Create: `internal/document/render.go`
 - Create: `internal/document/validation.go`
 - Create: `internal/document/*_test.go`
-- Create: `internal/cli/organization.go`
-- Create: `internal/cli/document.go`
+- Create: `internal/cli/organization.go` (organization validation, brands, context, and document commands)
+- Create: `internal/cli/organization_test.go` and `internal/cli/document_test.go`
 - Create: `internal/cli/document_test.go`
-- Create: `examples/organization-docs/capabilities/`
+- Modify: `internal/cli/root.go` and `cmd/orgdoc/main.go`
+- Modify: `internal/orgconfig/model.go`, `validate.go`, and profile tests
+- Modify: `schemas/document-type.schema.json` and `schemas/validate.go`
+- Create: `examples/organization-docs/schemas/*-request.schema.json`
+- Modify: `examples/organization-docs/document-types/*.yaml`
 
 **Interfaces:**
 - Consumes: resolved profile from Task 3 and worker runner from Task 4.
 - Produces: `BuildDocumentContext(profile ResolvedProfile) (DocumentContext, error)` and `RenderDocument(ctx context.Context, request RenderRequest) (DocumentResult, error)`.
 
-- [ ] Add golden JSON tests for context generation, including brand tokens, voice guidance, document fields, assets, and capability IDs.
-- [ ] Implement `organization validate`, `brands list`, and `context` commands with human and JSON output.
-- [ ] Implement document request validation against the selected document type schema before launching a renderer.
-- [ ] Persist a run manifest containing profile versions, capability/worker version, input references, timestamps, output paths, and stage statuses.
-- [ ] Ensure reruns preserve prior successful artifacts until replacement output has passed validation.
+- [x] Add golden JSON tests for context generation, including brand tokens, voice guidance, document fields, assets, and capability IDs.
+- [x] Implement `organization validate`, `brands list`, and `context` commands with human and JSON output.
+- [x] Implement document request validation against the selected document type schema before launching a renderer.
+- [x] Persist a run manifest containing profile versions, capability/worker version, input references, timestamps, output paths, and stage statuses.
+- [x] Ensure reruns preserve prior successful artifacts until replacement output has passed validation.
 
 **Acceptance:** The same operation and profile versions resolve to the same machine-readable context; different brands cannot leak styles/assets into one another; invalid document input never reaches a renderer.
 

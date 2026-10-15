@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -10,7 +11,12 @@ import (
 var Version = "dev"
 
 // Run executes the root command and returns a stable process exit code.
-func Run(args []string, _ io.Reader, stdout, stderr io.Writer) int {
+func Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int {
+	return RunContext(context.Background(), args, stdin, stdout, stderr)
+}
+
+// RunContext executes a command with caller-controlled cancellation.
+func RunContext(ctx context.Context, args []string, stdin io.Reader, stdout, stderr io.Writer) int {
 	format, commandArgs, err := parseRootArgs(args)
 	if err != nil {
 		writeError(stderr, format, "usage_error", err.Error())
@@ -30,6 +36,14 @@ func Run(args []string, _ io.Reader, stdout, stderr io.Writer) int {
 		return ExitSuccess
 	case "capabilities":
 		return runCapabilities(commandArgs[1:], format, stdout, stderr)
+	case "organization":
+		return runOrganization(commandArgs[1:], format, stdout, stderr)
+	case "brands":
+		return runBrands(commandArgs[1:], format, stdout, stderr)
+	case "context":
+		return runContext(commandArgs[1:], format, stdout, stderr)
+	case "document":
+		return runDocument(ctx, commandArgs[1:], format, stdin, stdout, stderr)
 	default:
 		writeError(stderr, format, "usage_error", fmt.Sprintf("unknown command %q", commandArgs[0]))
 		return ExitUsage
@@ -38,7 +52,7 @@ func Run(args []string, _ io.Reader, stdout, stderr io.Writer) int {
 
 const helpText = `OrgDoc Runtime applies organization document rules and brand profiles.
 
-Usage: orgdoc [--format human|json] [--help|--version|capabilities]
+Usage: orgdoc [--format human|json] [--help|--version|capabilities|organization|brands|context|document]
 
 Options:
   --format FORMAT  Select human or JSON output for diagnostics.
@@ -46,6 +60,10 @@ Options:
   --version        Show the CLI version.
   capabilities list [--organization PATH]       List validated capabilities.
   capabilities describe ID [--organization PATH] Show one capability manifest.
+  organization validate [--organization PATH]   Validate organization profiles.
+  brands list [--organization PATH]             List organization brands.
+  context --operation ID --document-type ID      Build selected renderer context.
+  document render --operation ID --document-type ID --input PATH --output-root PATH
 
 Exit codes: 0 success, 1 runtime error, 2 usage error.
 `

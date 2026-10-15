@@ -2,6 +2,7 @@ package schemas
 
 import (
 	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -39,6 +40,73 @@ func Validate(name string, instance any) error {
 	}
 	if err := schema.Validate(instance); err != nil {
 		return ValidationError{Field: schemaField(err), Err: err}
+	}
+	return nil
+}
+
+// ValidateBytes validates an instance against an organization-provided schema.
+// External references are rejected so validation never fetches network resources.
+func ValidateBytes(contents []byte, instance any) error {
+	schema, err := compileBytes(contents)
+	if err != nil {
+		return err
+	}
+	if err := schema.Validate(instance); err != nil {
+		return ValidationError{Field: schemaField(err), Err: err}
+	}
+	return nil
+}
+
+// ValidateSchemaBytes verifies that a user-provided JSON Schema is valid and offline-safe.
+func ValidateSchemaBytes(contents []byte) error {
+	_, err := compileBytes(contents)
+	return err
+}
+
+func compileBytes(contents []byte) (*jsonschema.Schema, error) {
+	var document any
+	if err := json.Unmarshal(contents, &document); err != nil {
+		return nil, fmt.Errorf("parse JSON Schema: %w", err)
+	}
+	if err := rejectExternalReferences(document); err != nil {
+		return nil, err
+	}
+	resource, err := jsonschema.UnmarshalJSON(bytes.NewReader(contents))
+	if err != nil {
+		return nil, fmt.Errorf("parse JSON Schema: %w", err)
+	}
+	compiler := jsonschema.NewCompiler()
+	compiler.DefaultDraft(jsonschema.Draft2020)
+	const location = "https://orgdoc.dev/organization/request.schema.json"
+	if err := compiler.AddResource(location, resource); err != nil {
+		return nil, fmt.Errorf("register request schema: %w", err)
+	}
+	schema, err := compiler.Compile(location)
+	if err != nil {
+		return nil, fmt.Errorf("compile request schema: %w", err)
+	}
+	return schema, nil
+}
+
+func rejectExternalReferences(value any) error {
+	switch node := value.(type) {
+	case map[string]any:
+		for _, name := range []string{"$ref", "$dynamicRef", "$recursiveRef"} {
+			if reference, ok := node[name].(string); ok && !strings.HasPrefix(reference, "#") {
+				return fmt.Errorf("request schema external references are not allowed")
+			}
+		}
+		for _, child := range node {
+			if err := rejectExternalReferences(child); err != nil {
+				return err
+			}
+		}
+	case []any:
+		for _, child := range node {
+			if err := rejectExternalReferences(child); err != nil {
+				return err
+			}
+		}
 	}
 	return nil
 }
