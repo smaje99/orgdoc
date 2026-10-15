@@ -1,0 +1,26 @@
+schema_version: 1
+id: invoice
+name: Factura de venta
+version: 1.0.0
+required_fields:
+  - invoice_number
+  - issue_date
+  - customer
+  - lines
+  - subtotal
+  - tax_total
+  - grand_total
+  - currency
+protected_fields:
+  - invoice_number
+  - issue_date
+  - due_date
+  - customer.tax_id
+  - lines[].quantity
+  - lines[].unit_price
+  - lines[].tax_rate
+  - subtotal
+  - tax_total
+  - grand_total
+  - currency
+renderer_capability: invoice-pdf

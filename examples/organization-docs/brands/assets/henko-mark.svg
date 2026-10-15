@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="48" viewBox="0 0 160 48" role="img" aria-label="Henko">
+  <rect width="48" height="48" rx="10" fill="#173F5F"/>
+  <path d="M13 24h22M24 13v22" stroke="#F6D55C" stroke-width="4" stroke-linecap="round"/>
+  <text x="60" y="32" font-family="sans-serif" font-size="23" font-weight="700" fill="#173F5F">HENKO</text>
+</svg>

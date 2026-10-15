@@ -1,0 +1,22 @@
+schema_version: 1
+id: henko
+name: Henko Technologies
+version: 1.0.0
+assets:
+  - brands/assets/henko-mark.svg
+visual:
+  colors:
+    primary: '#173F5F'
+    secondary: '#20639B'
+    accent: '#F6D55C'
+    text: '#17212B'
+  typography:
+    heading: 'Source Sans 3'
+    body: 'Source Sans 3'
+  logo: brands/assets/henko-mark.svg
+voice:
+  language: es
+  tone: claro, profesional y directo
+  avoid:
+    - afirmaciones sin respaldo
+    - tecnicismos innecesarios

@@ -1,0 +1,14 @@
+schema_version: 1
+id: report
+name: Informe narrativo
+version: 1.0.0
+required_fields:
+  - title
+  - source_references
+  - executive_summary
+  - findings
+protected_fields:
+  - source_references
+  - quotations
+  - citations
+renderer_capability: narrative-report

@@ -163,11 +163,11 @@ Human-readable output is for direct users. Every command used by agents supports
 - Consumes: schema version and field decisions recorded in Task 1.
 - Produces: `LoadOrganization(root string) (Organization, error)`, `ValidateOrganization(root string) []Diagnostic`, `ResolveProfile(root, operationID, documentType string) (ResolvedProfile, error)`.
 
-- [ ] Write schema fixtures for valid organizations, multiple brands, multiple operations sharing a brand, missing brand references, invalid asset paths, unsupported schema versions, and ambiguous selection.
-- [ ] Implement profile loading with paths resolved relative to the organization repository, never the installed binary or current source checkout.
-- [ ] Validate all profile references before rendering; return file and field locations in diagnostics.
-- [ ] Implement explicit profile resolution; reject missing/ambiguous operation IDs.
-- [ ] Add an example organization with two brands and two operations, including an operation that intentionally shares a brand.
+- [x] Write schema fixtures for valid organizations, multiple brands, multiple operations sharing a brand, missing brand references, invalid asset paths, unsupported schema versions, and ambiguous selection.
+- [x] Implement profile loading with paths resolved relative to the organization repository, never the installed binary or current source checkout.
+- [x] Validate all profile references before rendering; return file and field locations in diagnostics.
+- [x] Implement explicit profile resolution; reject missing/ambiguous operation IDs.
+- [x] Add an example organization with two brands and three operations: two share one brand and the third selects the other brand.
 
 **Acceptance:** Profile validation is deterministic, can run offline, and rejects invalid or ambiguous configuration before any worker starts or output is created.
 

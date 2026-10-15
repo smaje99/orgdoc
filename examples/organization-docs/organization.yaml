@@ -1,0 +1,13 @@
+schema_version: 1
+id: henko
+name: Henko Technologies
+brands:
+  - brands/henko.yaml
+  - brands/henko-academy.yaml
+operations:
+  - operations/consulting.yaml
+  - operations/training.yaml
+  - operations/academy.yaml
+document_types:
+  - document-types/invoice.yaml
+  - document-types/report.yaml

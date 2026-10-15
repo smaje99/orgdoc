@@ -1,0 +1,16 @@
+schema_version: 1
+id: henko-academy
+name: Henko Academy
+version: 1.0.0
+assets: []
+visual:
+  colors:
+    primary: '#6B3FA0'
+    secondary: '#9B72CF'
+    accent: '#F2C14E'
+  typography:
+    heading: 'Montserrat'
+    body: 'Source Sans 3'
+voice:
+  language: es
+  tone: didáctico, cercano y respetuoso
