@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrgDoc media transcription request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_path"],
+  "properties": {
+    "source_path": {"type": "string", "minLength": 1},
+    "recursive": {"type": "boolean", "default": false},
+    "resume": {"type": "boolean", "default": false},
+    "overwrite": {"type": "boolean", "default": false},
+    "language": {"type": ["string", "null"]},
+    "model": {"type": "string", "minLength": 1},
+    "device": {"enum": ["auto", "cpu", "cuda", "mps"]},
+    "template": {"type": "string", "minLength": 1},
+    "provider": {"type": "string", "minLength": 1},
+    "llm_model": {"type": "string", "minLength": 1},
+    "output_format": {"enum": ["markdown", "pdf"]}
+  }
+}

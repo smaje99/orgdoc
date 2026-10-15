@@ -1,0 +1,12 @@
+schema_version: 1
+id: media-report
+name: Informe de multimedia
+version: 1.0.0
+request_schema: schemas/media-report-request.schema.json
+required_fields:
+  - artifact_path
+protected_fields:
+  - source_references
+  - quotations
+  - citations
+renderer_capability: media-report

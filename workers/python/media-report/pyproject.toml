@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orgdoc-media-report-worker"
+version = "1.0.0"
+description = "Optional OrgDoc worker for compatible local media reports and PDFs."
+requires-python = ">=3.11,<3.13"
+dependencies = ["media-report-cli"]
+
+[project.scripts]
+orgdoc-media-report = "media_report_worker.main:main"
+orgdoc-media-pdf = "media_report_worker.pdf:main"
+
+[tool.uv.sources]
+media-report-cli = { path = "../../.." }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/media_report_worker"]

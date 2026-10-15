@@ -1,0 +1,19 @@
+schema_version: 1
+id: media-transcription
+version: 1.0.0
+description: Scan and transcribe local media while preserving the legacy schema-v2 artifact tree.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-media-transcription
+resource_class: memory
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:read_input
+  - filesystem:write_artifact_dir
+  - filesystem:write_media_artifacts
+timeout_seconds: 86400
+max_output_bytes: 2097152

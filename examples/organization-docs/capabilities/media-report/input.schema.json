@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrgDoc media report worker input",
+  "type": "object",
+  "required": ["protocol_version", "job_id", "document_type", "input", "artifact_dir"],
+  "properties": {
+    "protocol_version": {"const": 1},
+    "job_id": {"type": "string", "minLength": 1},
+    "document_type": {"const": "media-report"},
+    "input": {"type": "object", "required": ["document", "context", "organization_root"]},
+    "artifact_dir": {"type": "string", "minLength": 1}
+  }
+}

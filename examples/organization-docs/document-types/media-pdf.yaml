@@ -1,0 +1,9 @@
+schema_version: 1
+id: media-pdf
+name: PDF de informe multimedia
+version: 1.0.0
+request_schema: schemas/media-report-request.schema.json
+required_fields:
+  - artifact_path
+protected_fields: []
+renderer_capability: media-pdf

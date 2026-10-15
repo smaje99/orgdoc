@@ -1,0 +1,19 @@
+schema_version: 1
+id: media-pdf
+version: 1.0.0
+description: Render a reusable legacy media report as PDF without regenerating the LLM report.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-media-pdf
+resource_class: cpu
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:read_input
+  - filesystem:write_artifact_dir
+  - filesystem:write_media_artifacts
+timeout_seconds: 600
+max_output_bytes: 1048576

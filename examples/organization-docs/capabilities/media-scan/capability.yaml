@@ -1,0 +1,18 @@
+schema_version: 1
+id: media-scan
+version: 1.0.0
+description: Discover supported local audio and video files without loading a model.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-media-scan
+resource_class: cpu
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:read_input
+  - filesystem:write_artifact_dir
+timeout_seconds: 60
+max_output_bytes: 1048576

@@ -60,6 +60,31 @@ func TestDescribeReturnsActionableErrorForUnknownID(t *testing.T) {
 	}
 }
 
+func TestExampleOrganizationDiscoversOptionalMediaCapabilities(t *testing.T) {
+	root := filepath.Join("..", "..", "examples", "organization-docs")
+	capabilities, err := Discover(root)
+	if err != nil {
+		t.Fatalf("Discover(example organization) error = %v", err)
+	}
+	want := map[string]ResourceClass{
+		"media-scan":          ResourceClassCPU,
+		"media-transcription": ResourceClassMemory,
+		"media-report":        ResourceClassMemory,
+		"media-pdf":           ResourceClassCPU,
+	}
+	for _, capability := range capabilities {
+		if expected, exists := want[capability.ID]; exists {
+			if capability.ResourceClass != expected {
+				t.Errorf("%s resource class = %q, want %q", capability.ID, capability.ResourceClass, expected)
+			}
+			delete(want, capability.ID)
+		}
+	}
+	if len(want) > 0 {
+		t.Fatalf("missing optional media capabilities: %v", want)
+	}
+}
+
 func validManifest(id string) string {
 	return "schema_version: 1\n" +
 		"id: " + id + "\n" +

@@ -315,11 +315,13 @@ Human-readable output is for direct users. Every command used by agents supports
 - Consumes: stable capability and batch contracts from Tasks 4 and 8.
 - Produces: optional media scan, transcribe, report, and PDF capabilities that preserve supported existing artifact semantics during compatibility period.
 
-- [ ] Inventory current CLI commands, metadata versions, artifact paths, and resume behavior against the Task 1 compatibility matrix.
-- [ ] Wrap existing FFmpeg, faster-whisper, LLM, and Pandoc flows as separate workers; retain GPU/CPU fallback metadata and remote-provider warnings.
-- [ ] Add parity fixtures proving valid existing artifacts can be read/resumed or migrated without losing transcripts, raw responses, logs, or metadata.
-- [ ] Keep `media-report` as a compatibility entry point that forwards supported commands to the new runtime or legacy Python path during one migration release.
-- [ ] Defer MCP, arbitrary third-party plugin discovery, and automatic Python environment installation until CLI worker protocol and organization profile format stabilize.
+- [x] Inventory current CLI commands, metadata versions, artifact paths, and resume behavior against the Task 1 compatibility matrix; document schema-v2 metadata, sibling artifact directories, and resume options.
+- [x] Wrap existing FFmpeg, faster-whisper, LLM, and Pandoc flows as separate workers; retain GPU/CPU fallback metadata and remote-provider warnings.
+- [x] Add parity fixtures proving valid existing artifacts can be read/resumed or indexed without losing transcripts, raw responses, logs, or metadata.
+- [x] Keep `media-report` as a compatibility entry point on the legacy Python path during the migration release.
+- [x] Defer MCP, arbitrary third-party plugin discovery, and automatic Python environment installation until CLI worker protocol and organization profile format stabilize.
+
+Mixed workload benchmark (100 invoice PDF and local media-scan jobs) completed at 1.96 jobs/s serial and 4.76 jobs/s with four workers (2.43x), with 12.16/12.94 MiB coordinator peak RSS. This measures scan and document workers only; transcription inference was not benchmarked and no model was downloaded or loaded.
 
 **Acceptance:** Media workflows are optional, discoverable, locally executable, bounded by scheduler policy, and do not regress artifact traceability or resume behavior.
 

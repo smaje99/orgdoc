@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import math
+import os
 import platform
 import statistics
 import subprocess
@@ -39,12 +40,10 @@ def main() -> int:
     )
     elapsed.append(time.perf_counter() - started)
     rss_mib.append(int(measured.stderr.strip().splitlines()[-1]) / 1024)
-  print(
-    f"host={platform.platform()} machine={platform.machine()} cpu_count={__import__('os').cpu_count()}"
-  )
-  print(
-    f"samples={args.samples} median_ms={statistics.median(elapsed) * 1000:.2f} p95_ms={percentile(elapsed, 0.95) * 1000:.2f}"
-  )
+  print(f"host={platform.platform()} machine={platform.machine()} cpu_count={os.cpu_count()}")
+  median_ms = statistics.median(elapsed) * 1000
+  p95_ms = percentile(elapsed, 0.95) * 1000
+  print(f"samples={args.samples} median_ms={median_ms:.2f} p95_ms={p95_ms:.2f}")
   print(f"peak_rss_mib_median={statistics.median(rss_mib):.2f} peak_rss_mib_max={max(rss_mib):.2f}")
   return 0
 

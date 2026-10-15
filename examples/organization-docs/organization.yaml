@@ -8,6 +8,11 @@ operations:
   - operations/consulting.yaml
   - operations/training.yaml
   - operations/academy.yaml
+  - operations/media.yaml
 document_types:
   - document-types/invoice.yaml
   - document-types/report.yaml
+  - document-types/media-scan.yaml
+  - document-types/media-transcription.yaml
+  - document-types/media-report.yaml
+  - document-types/media-pdf.yaml

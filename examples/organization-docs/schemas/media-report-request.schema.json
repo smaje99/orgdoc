@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrgDoc media report request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["artifact_path"],
+  "properties": {
+    "artifact_path": {"type": "string", "minLength": 1},
+    "template": {"type": "string", "minLength": 1},
+    "provider": {"type": "string", "minLength": 1},
+    "model": {"type": "string", "minLength": 1},
+    "overwrite": {"type": "boolean", "default": false},
+    "include_pdf": {"type": "boolean", "default": true},
+    "output_format": {"enum": ["markdown", "pdf"]}
+  }
+}

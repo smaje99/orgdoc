@@ -45,6 +45,12 @@ func TestCommittedExampleOrganizationResolvesBothBrands(t *testing.T) {
 	if err != nil || academy.Brand.ID != "henko-academy" {
 		t.Fatalf("academy profile = (%#v, %v)", academy, err)
 	}
+	for _, documentType := range []string{"media-scan", "media-transcription", "media-report", "media-pdf"} {
+		media, err := ResolveProfile(root, "media", documentType)
+		if err != nil || media.DocumentType.RendererCapability != documentType {
+			t.Fatalf("media profile %q = (%#v, %v)", documentType, media, err)
+		}
+	}
 }
 
 func TestValidateOrganizationReportsMissingBrandReference(t *testing.T) {

@@ -43,9 +43,11 @@ Measured 2026-10-14 on Linux x86_64, kernel 6.17.0-40-generic, Intel Core i7-855
 | 100 no-op worker jobs | 1 | 646 ms | 154.8 jobs/s | — | — |
 | 100 no-op worker jobs | 4 | 210 ms | 475.4 jobs/s (3.07x serial) | — | — |
 | 100 mixed-class no-op jobs | CPU 4, GPU 1, memory 1 | 261 ms | 382.5 jobs/s | — | — |
+| 100 mixed invoice PDF and local media-scan jobs | 1 | 51.14 s | 1.96 jobs/s | 12.16 MiB | 58.47 MiB |
+| 100 mixed invoice PDF and local media-scan jobs | 4 | 21.03 s | 4.76 jobs/s (2.43x serial) | 12.94 MiB | 154.85 MiB |
 
-The CLI startup gate, four-worker no-op throughput gate, invoice throughput comparison, and coordinator memory gate passed in this run. Process-tree RSS includes the Python workers and is shown separately; the larger four-worker value is expected from concurrent isolated worker processes. The no-op mixed-class figure only checks resource scheduling behavior.
+The CLI startup gate, four-worker no-op throughput gate, invoice throughput comparison, mixed invoice/media-scan throughput comparison, and coordinator memory gate passed in this run. Process-tree RSS includes the Python workers and is shown separately; the larger four-worker value is expected from concurrent isolated worker processes. The no-op mixed-class figure only checks resource scheduling behavior. The mixed invoice/media-scan workload exercises local file discovery but does not decode audio or load a model; it is not an inference benchmark.
 
-Real mixed document/media and model-load measurements are deferred until Task 9 supplies a media worker and a named local model/device. Until then, report only the mixed resource-class no-op proxy and do not present it as inference throughput. No model is downloaded as part of this benchmark task.
+Model-load and inference measurements remain deferred until a named local model/device and representative media fixture are selected. No model was downloaded or loaded for this benchmark.
 
 Release gates from Task 1 remain: `orgdoc --help` p50 <= 100 ms, p95 <= 150 ms, RSS <= 25 MiB; 100 deterministic no-op worker jobs at four workers achieve >= 2x serial throughput; coordinator RSS stays below 40 MiB. Model and media results must name their hardware, device, model version, and worker version.

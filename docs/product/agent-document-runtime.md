@@ -87,3 +87,5 @@ Batch input is a versioned JSON file. Organization and output paths are resolved
 ```
 
 Results retain input order. A failed job does not prevent independent jobs from completing; reusing a job ID leaves its previous artifacts unchanged. `--max-workers` sets the total and CPU concurrency. GPU/model and memory-heavy capabilities remain limited to one active job each by default.
+
+Media capabilities can be chained through their JSON results: `media-scan` finds supported files, `media-transcription` writes or resumes the schema-v2 sibling artifact tree, `media-report` generates the narrative from reusable transcripts, and `media-pdf` renders a completed Markdown report. Run dependent jobs in successive batches so the agent can pass the preceding result's artifact path into the next request. Scanning and transcription accept either a file or directory; directory recursion must be requested explicitly.

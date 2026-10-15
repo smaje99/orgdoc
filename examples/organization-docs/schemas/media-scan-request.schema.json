@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "OrgDoc media scan request",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["source_path"],
+  "properties": {
+    "source_path": {"type": "string", "minLength": 1},
+    "recursive": {"type": "boolean", "default": false}
+  }
+}

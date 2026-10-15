@@ -1,0 +1,20 @@
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[project]
+name = "orgdoc-media-transcription-worker"
+version = "1.0.0"
+description = "Optional OrgDoc worker for compatible local media transcription."
+requires-python = ">=3.11,<3.13"
+dependencies = ["media-report-cli[transcription]"]
+
+[project.scripts]
+orgdoc-media-scan = "media_transcription_worker.scan:main"
+orgdoc-media-transcription = "media_transcription_worker.main:main"
+
+[tool.uv.sources]
+media-report-cli = { path = "../../.." }
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/media_transcription_worker"]

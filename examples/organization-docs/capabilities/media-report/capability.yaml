@@ -1,0 +1,20 @@
+schema_version: 1
+id: media-report
+version: 1.0.0
+description: Generate a traceable narrative report and optional PDF from reusable media transcript artifacts.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-media-report
+resource_class: memory
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:read_input
+  - filesystem:write_artifact_dir
+  - filesystem:write_media_artifacts
+  - network
+timeout_seconds: 3600
+max_output_bytes: 2097152

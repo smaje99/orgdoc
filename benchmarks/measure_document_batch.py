@@ -48,22 +48,38 @@ def run_batch(
   workers: int,
   worker_paths: list[Path],
   jobs_count: int,
+  mixed_media_scan: bool,
 ) -> dict:
   with tempfile.TemporaryDirectory(prefix=f"orgdoc-batch-{workers}-") as temp:
     root = Path(temp)
+    media_source = root / "sample.mp3"
+    if mixed_media_scan:
+      media_source.touch()
+    jobs = []
+    for index in range(jobs_count):
+      if mixed_media_scan and index % 2:
+        jobs.append(
+          {
+            "job_id": f"media-scan-{index:03d}",
+            "operation": "media",
+            "document_type": "media-scan",
+            "input": {"source_path": str(media_source)},
+          }
+        )
+      else:
+        jobs.append(
+          {
+            "job_id": f"invoice-{index:03d}",
+            "operation": "consulting",
+            "document_type": "invoice",
+            "input": fixture,
+          }
+        )
     definition = {
       "schema_version": 1,
       "organization": str(organization),
       "output_root": str(root / "runs"),
-      "jobs": [
-        {
-          "job_id": f"invoice-{index:03d}",
-          "operation": "consulting",
-          "document_type": "invoice",
-          "input": fixture,
-        }
-        for index in range(jobs_count)
-      ],
+      "jobs": jobs,
     }
     job_file = root / "batch.json"
     job_file.write_text(json.dumps(definition), encoding="utf-8")
@@ -103,6 +119,7 @@ def run_batch(
     if result["status"] != "succeeded" or len(result["results"]) != jobs_count:
       raise RuntimeError(f"unexpected result: {result['status']} for {len(result['results'])} jobs")
     return {
+      "workload": "mixed_invoice_media_scan" if mixed_media_scan else "invoice_pdf",
       "workers": workers,
       "jobs": jobs_count,
       "seconds": process_elapsed,
@@ -121,15 +138,26 @@ def main() -> int:
   parser.add_argument(
     "--invoice-worker-bin", type=Path, default=Path("workers/python/reportlab-invoice/.venv/bin")
   )
+  parser.add_argument(
+    "--media-worker-bin", type=Path, default=Path("workers/python/media-transcription/.venv/bin")
+  )
+  parser.add_argument(
+    "--mixed-media-scan",
+    action="store_true",
+    help="Alternate invoice PDF jobs with local media-scan jobs (no audio decoding or model load).",
+  )
   parser.add_argument("--jobs", type=int, default=100)
   args = parser.parse_args()
   binary = args.binary.resolve()
   organization = args.organization.resolve()
-  worker_bin = args.invoice_worker_bin.resolve()
+  worker_bins = [args.invoice_worker_bin.resolve()]
+  if args.mixed_media_scan:
+    worker_bins.append(args.media_worker_bin.resolve())
   fixture = json.loads((Path("tests/fixtures/documents/invoice.json")).read_text(encoding="utf-8"))
-  print(f"host={platform.platform()} machine={platform.machine()} python_worker={worker_bin}")
+  print(f"host={platform.platform()} machine={platform.machine()} worker_bins={worker_bins}")
   results = [
-    run_batch(binary, organization, fixture, workers, [worker_bin], args.jobs) for workers in (1, 4)
+    run_batch(binary, organization, fixture, workers, worker_bins, args.jobs, args.mixed_media_scan)
+    for workers in (1, 4)
   ]
   for result in results:
     print(json.dumps(result, sort_keys=True))
