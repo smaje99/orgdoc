@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/smaje/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
 )
 
 type DocumentContext struct {

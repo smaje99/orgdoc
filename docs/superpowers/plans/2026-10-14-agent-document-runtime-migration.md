@@ -111,7 +111,7 @@ Human-readable output is for direct users. Every command used by agents supports
 
 - [x] Inventory current public commands, config keys, metadata files, generated artifacts, and supported workflows in a compatibility matrix.
 - [x] Measure startup and RSS for `--help`, `doctor`, and `templates list`; record why an orchestration-only batch baseline is not available and define the Task 8 fixture method.
-- [x] Select the product name (**OrgDoc Runtime**), Go module (`github.com/smaje/orgdoc`), and CLI command (`orgdoc`).
+- [x] Select the product name (**OrgDoc Runtime**), Go module (`github.com/smaje99/orgdoc`), and CLI command (`orgdoc`).
 - [x] Rewrite product and technical context to make organization-wide document consistency the primary product and media processing an optional capability pack.
 - [x] Define release/cutover policy: preserve `media-report` as a compatibility shim for one migration release; remove it only in a later major release after command parity and user-facing migration notes.
 - [x] Record measurable startup, memory, and batch goals against the baseline, separating core orchestration from model/device work.

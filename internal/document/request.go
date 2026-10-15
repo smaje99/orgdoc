@@ -1,8 +1,8 @@
 package document
 
 import (
-	"github.com/smaje/orgdoc/internal/orgconfig"
-	"github.com/smaje/orgdoc/internal/worker"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/internal/worker"
 )
 
 type RenderRequest struct {

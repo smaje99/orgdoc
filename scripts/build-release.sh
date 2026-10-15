@@ -27,7 +27,7 @@ for TARGET in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
     cd "$ROOT"
     CGO_ENABLED=0 GOOS="$GOOS" GOARCH="$GOARCH" go build \
       -trimpath \
-      -ldflags "-s -w -X github.com/smaje/orgdoc/internal/cli.Version=${VERSION}" \
+      -ldflags "-s -w -X github.com/smaje99/orgdoc/internal/cli.Version=${VERSION}" \
       -o "$PACKAGE_DIR/orgdoc" \
       ./cmd/orgdoc
   )

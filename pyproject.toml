@@ -55,11 +55,11 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/smaje99/media-report-cli"
-Repository = "https://github.com/smaje99/media-report-cli"
-Issues = "https://github.com/smaje99/media-report-cli/issues"
-Documentation = "https://github.com/smaje99/media-report-cli/tree/main/docs"
-Changelog = "https://github.com/smaje99/media-report-cli/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/smaje99/orgdoc"
+Repository = "https://github.com/smaje99/orgdoc"
+Issues = "https://github.com/smaje99/orgdoc/issues"
+Documentation = "https://github.com/smaje99/orgdoc/tree/main/docs"
+Changelog = "https://github.com/smaje99/orgdoc/blob/main/CHANGELOG.md"
 
 [project.scripts]
 media-report = "media_report.cli.app:main"

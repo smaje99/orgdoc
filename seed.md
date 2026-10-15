@@ -576,9 +576,9 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/smaje99/media-report-cli"
-Repository = "https://github.com/smaje99/media-report-cli"
-Issues = "https://github.com/smaje99/media-report-cli/issues"
+Homepage = "https://github.com/smaje99/orgdoc"
+Repository = "https://github.com/smaje99/orgdoc"
+Issues = "https://github.com/smaje99/orgdoc/issues"
 
 [project.scripts]
 media-report = "media_report.cli.app:app"
@@ -618,8 +618,8 @@ pipx install media-report-cli
 
 3. Instalación desde repositorio local para desarrollo:
 
-git clone https://github.com/smaje99/media-report-cli
-cd media-report-cli
+git clone https://github.com/smaje99/orgdoc
+cd orgdoc
 uv sync
 uv run media-report doctor
 

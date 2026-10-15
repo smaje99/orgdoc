@@ -2,7 +2,7 @@
 
 ## Target Runtime
 
-- Go control plane and `orgdoc` CLI, module `github.com/smaje/orgdoc`
+- Go control plane and `orgdoc` CLI, module `github.com/smaje99/orgdoc`
 - Python and native capability workers installed independently when their libraries are needed
 - Versioned YAML organization profiles validated before execution
 - Versioned JSON over stdin/stdout for worker requests and results; diagnostics and progress use stderr

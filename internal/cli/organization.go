@@ -9,8 +9,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/smaje/orgdoc/internal/document"
-	"github.com/smaje/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/internal/document"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
 )
 
 type organizationOptions struct {

@@ -14,7 +14,7 @@ Local media transcription and reporting remain available as optional capabilitie
 ## Names and compatibility
 
 - Product: **OrgDoc Runtime**
-- Go module: `github.com/smaje/orgdoc`
+- Go module: `github.com/smaje99/orgdoc`
 - Command: `orgdoc`
 - Core distribution: versioned platform binaries and source builds; no replacement PyPI package is published during migration.
 - Compatibility: `media-report` remains available as a shim for one migration release. Removal requires a later major release, command parity, a migration guide, and release notes.

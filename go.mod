@@ -1,4 +1,4 @@
-module github.com/smaje/orgdoc
+module github.com/smaje99/orgdoc
 
 go 1.27.0
 

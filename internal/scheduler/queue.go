@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/smaje/orgdoc/internal/worker"
+	"github.com/smaje99/orgdoc/internal/worker"
 )
 
 type JobStatus string

@@ -1,6 +1,6 @@
 package scheduler
 
-import "github.com/smaje/orgdoc/internal/worker"
+import "github.com/smaje99/orgdoc/internal/worker"
 
 const DefaultMaxWorkers = 4
 

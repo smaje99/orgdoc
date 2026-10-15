@@ -6,7 +6,7 @@ The Go core is independent of Python, media models, and network services. Option
 
 ## Install OrgDoc
 
-Download a release archive for Linux or macOS from the [GitHub Releases page](https://github.com/smaje99/media-report-cli/releases). Each archive includes the `orgdoc` executable, `INSTALL.md`, and `LICENSE`; `SHA256SUMS` is published alongside the archives.
+Download a release archive for Linux or macOS from the [GitHub Releases page](https://github.com/smaje99/orgdoc/releases). Each archive includes the `orgdoc` executable, `INSTALL.md`, and `LICENSE`; `SHA256SUMS` is published alongside the archives.
 
 To build all supported binaries from a source checkout:
 

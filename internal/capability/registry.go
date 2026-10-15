@@ -9,7 +9,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/smaje/orgdoc/schemas"
+	"github.com/smaje99/orgdoc/schemas"
 	"gopkg.in/yaml.v3"
 )
 

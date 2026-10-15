@@ -11,11 +11,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/smaje/orgdoc/internal/capability"
-	"github.com/smaje/orgdoc/internal/document"
-	"github.com/smaje/orgdoc/internal/orgconfig"
-	"github.com/smaje/orgdoc/internal/scheduler"
-	"github.com/smaje/orgdoc/internal/worker"
+	"github.com/smaje99/orgdoc/internal/capability"
+	"github.com/smaje99/orgdoc/internal/document"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/internal/scheduler"
+	"github.com/smaje99/orgdoc/internal/worker"
 )
 
 type batchOptions struct {

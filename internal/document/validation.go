@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/smaje/orgdoc/internal/orgconfig"
-	"github.com/smaje/orgdoc/schemas"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/schemas"
 )
 
 // ValidateDocumentInput checks document data against the selected profile's request schema.

@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smaje/orgdoc/internal/worker"
+	"github.com/smaje99/orgdoc/internal/worker"
 )
 
 func TestRunBatchBoundsConcurrencyByResourceClass(t *testing.T) {

@@ -6,7 +6,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/smaje/orgdoc/internal/capability"
+	"github.com/smaje99/orgdoc/internal/capability"
 )
 
 func runCapabilities(args []string, format string, stdout, stderr io.Writer) int {

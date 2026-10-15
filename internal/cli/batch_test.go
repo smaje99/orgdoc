@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smaje/orgdoc/internal/scheduler"
+	"github.com/smaje99/orgdoc/internal/scheduler"
 )
 
 func TestBatchRunKeepsOrderContinuesFailuresAndProtectsRetries(t *testing.T) {

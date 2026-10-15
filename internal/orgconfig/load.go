@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	orgschemas "github.com/smaje/orgdoc/schemas"
+	orgschemas "github.com/smaje99/orgdoc/schemas"
 	"gopkg.in/yaml.v3"
 )
 

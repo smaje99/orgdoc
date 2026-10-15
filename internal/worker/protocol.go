@@ -1,6 +1,6 @@
 package worker
 
-import "github.com/smaje/orgdoc/internal/capability"
+import "github.com/smaje99/orgdoc/internal/capability"
 
 const ProtocolVersion = 1
 

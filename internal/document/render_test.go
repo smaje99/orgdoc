@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/smaje/orgdoc/internal/orgconfig"
-	"github.com/smaje/orgdoc/internal/worker"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/internal/worker"
 )
 
 func TestRenderDocumentPersistsRunManifestAndLeavesPriorRunUntouched(t *testing.T) {

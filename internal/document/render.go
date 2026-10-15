@@ -11,8 +11,8 @@ import (
 	"regexp"
 	"time"
 
-	"github.com/smaje/orgdoc/internal/capability"
-	"github.com/smaje/orgdoc/internal/worker"
+	"github.com/smaje99/orgdoc/internal/capability"
+	"github.com/smaje99/orgdoc/internal/worker"
 )
 
 var safeJobID = regexp.MustCompile(`^[A-Za-z0-9][A-Za-z0-9_-]{0,79}$`)

@@ -5,7 +5,7 @@ import (
 	"os"
 	"os/signal"
 
-	"github.com/smaje/orgdoc/internal/cli"
+	"github.com/smaje99/orgdoc/internal/cli"
 )
 
 func main() {

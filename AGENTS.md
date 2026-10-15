@@ -2,7 +2,7 @@
 
 ## Product and Migration State
 
-The target product is OrgDoc Runtime: a local Go CLI for agent-discoverable document capabilities, organization-specific brand consistency, and traceable artifacts. The Go module is `github.com/smaje/orgdoc`; its command is `orgdoc`. The first documents are invoice PDF and narrative Markdown report. Media workflows are optional capabilities. See `docs/product/agent-document-runtime.md` and the migration plan for scope and gates.
+The target product is OrgDoc Runtime: a local Go CLI for agent-discoverable document capabilities, organization-specific brand consistency, and traceable artifacts. The Go module is `github.com/smaje99/orgdoc`; its command is `orgdoc`. The first documents are invoice PDF and narrative Markdown report. Media workflows are optional capabilities. See `docs/product/agent-document-runtime.md` and the migration plan for scope and gates.
 
 The existing `media-report-cli` Python package (`media_report`, command `media-report`) remains the compatibility implementation during migration. Do not remove or republish it under a new name before the compatibility release and later major-version cutover criteria pass.
 

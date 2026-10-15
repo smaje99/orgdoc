@@ -3,7 +3,7 @@
 ## Naming and release decision
 
 - Product: **OrgDoc Runtime**
-- Go module: `github.com/smaje/orgdoc`
+- Go module: `github.com/smaje99/orgdoc`
 - New command: `orgdoc`
 - Existing distribution/import/command: `media-report-cli` / `media_report` / `media-report`
 - Keep `media-report` as a compatibility shim for one migration release. Remove the Python package and command only in a later major release after parity, migration notes, and an announced deprecation path. Do not publish an `orgdoc` replacement package before the release gate.

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/smaje/orgdoc/internal/orgconfig"
+	"github.com/smaje99/orgdoc/internal/orgconfig"
 )
 
 func TestBuildDocumentContextMatchesGolden(t *testing.T) {
