@@ -109,13 +109,13 @@ Human-readable output is for direct users. Every command used by agents supports
 - Consumes: current CLI behavior, existing artifact layout, this migration specification.
 - Produces: accepted product scope, final product/package/command names, baseline methodology, and a compatibility matrix for all current public commands.
 
-- [ ] Inventory current public commands, config keys, metadata files, generated artifacts, and supported workflows in a compatibility matrix.
-- [ ] Measure cold start and idle RSS for `--help`, `doctor`, and `templates list`; measure batch throughput and peak RSS on fixed small fixtures, separating orchestration from model load/inference.
-- [ ] Select the product name and Go module/CLI command. Use `orgdoc` only as a placeholder until this decision is recorded.
-- [ ] Rewrite product and technical context to make organization-wide document consistency the primary product and media processing an optional capability pack.
-- [ ] Define release/cutover policy: preserve `media-report` as a compatibility shim for one migration release; remove it only in a later major release after command parity and user-facing migration notes.
-- [ ] Record measurable startup, memory, and batch goals against the baseline; do not set a throughput target that ignores model/device constraints.
-- [ ] Review the compatibility matrix and goals before implementation begins.
+- [x] Inventory current public commands, config keys, metadata files, generated artifacts, and supported workflows in a compatibility matrix.
+- [x] Measure startup and RSS for `--help`, `doctor`, and `templates list`; record why an orchestration-only batch baseline is not available and define the Task 8 fixture method.
+- [x] Select the product name (**OrgDoc Runtime**), Go module (`github.com/smaje/orgdoc`), and CLI command (`orgdoc`).
+- [x] Rewrite product and technical context to make organization-wide document consistency the primary product and media processing an optional capability pack.
+- [x] Define release/cutover policy: preserve `media-report` as a compatibility shim for one migration release; remove it only in a later major release after command parity and user-facing migration notes.
+- [x] Record measurable startup, memory, and batch goals against the baseline, separating core orchestration from model/device work.
+- [x] Review the compatibility matrix and goals before implementation begins.
 
 **Acceptance:** The docs state one product promise, an explicit supported first document set (invoice PDF and narrative report), a final command/package name, quantified or hardware-qualified performance goals, and a command-by-command migration decision.
 

@@ -1,39 +1,16 @@
 # Roadmap
 
-## Phase 0
+The migration is governed by [the task-by-task plan](../superpowers/plans/2026-10-14-agent-document-runtime-migration.md).
 
-Bootstrap packaging, docs, CLI skeleton, bundled resources, and tests.
+1. Lock product scope, names, compatibility matrix, and performance baseline.
+2. Build the Go CLI shell and stable human/JSON command contract.
+3. Define and validate organization, operation, brand, and document profiles.
+4. Discover capabilities and invoke versioned workers safely.
+5. Resolve document context and render validated artifacts with provenance.
+6. Add the optional Humanizer skill with protected-field rules.
+7. Deliver the invoice PDF and narrative report workers.
+8. Add bounded batch scheduling and benchmark gates.
+9. Move media workflows into an optional capability pack with artifact parity.
+10. Package, document, and cut over only after all migration gates pass.
 
-## Phase 1
-
-Configuration flow, doctor checks, and public CLI stabilization.
-
-## Phase 2
-
-Media discovery, artifact planning, naming policy, and resumable metadata format.
-
-## Phase 3
-
-FFmpeg extraction and normalization adapter.
-
-## Phase 4
-
-Transcription pipeline with `faster-whisper` behind the `TranscriptionProvider` port.
-Prefer GPU-backed inference when available, with CPU fallback preserved.
-
-## Phase 5
-
-Prompt rendering and LLM-backed Markdown report generation.
-Preserve the same GPU-first preference for local inference runtimes such as Ollama.
-
-## Phase 6
-
-Pandoc plus LaTeX PDF rendering.
-
-## Phase 7
-
-Packaging hardening, installation validation, and expanded integration tests.
-
-## Phase 8
-
-Future work such as diarization, WhisperX, job queues, TUI workflows, folder watchers, PDF QA, or PDF input support.
+Keep the Python `media-report` command during the migration release. Remove it only in a later major release after parity and migration documentation are complete.

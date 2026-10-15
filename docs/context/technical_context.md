@@ -1,42 +1,26 @@
 # Technical Context
 
-## Runtime Stack
+## Target Runtime
 
-- Python 3.11+
-- Typer for CLI composition
-- Rich for output and diagnostics
-- Pydantic and pydantic-settings for validated settings
-- httpx for future HTTP-based providers
-- tomli-w for config file creation
+- Go control plane and `orgdoc` CLI, module `github.com/smaje/orgdoc`
+- Python and native capability workers installed independently when their libraries are needed
+- Versioned YAML organization profiles validated before execution
+- Versioned JSON over stdin/stdout for worker requests and results; diagnostics and progress use stderr
+- Skills provide agent instructions; schemas, profile resolution, and renderers enforce rules
 
-Typed integration boundaries for third-party SDKs should stay private to their
-infrastructure adapters when they only describe the minimum external shape needed by that adapter.
+## Runtime Requirements
 
-## External Tools
+- Help, version, organization validation, and capability discovery run without Python, models, or network access.
+- Invoke workers directly without shell interpolation. Apply timeouts, cancellation, bounded concurrency, and per-job artifact roots.
+- Resolve organization assets relative to the organization repository, not the executable or source checkout.
+- Keep structured data and protected fields unchanged through narrative editing and rendering.
+- Persist profile, document, capability, worker, input, and output provenance.
+- Keep remote LLM use explicit and visible.
 
-- `ffmpeg` for media extraction and normalization
-- `pandoc` plus `xelatex` or `lualatex` for PDF generation
-- `ollama` for local LLM inference
+## Compatibility Runtime
 
-These remain external system dependencies rather than bundled Python dependencies.
+The Python `media-report` CLI and package remain available during migration. It is the reference for current media workflows and artifact semantics until the optional media workers pass parity checks. Retain the compatibility command for one migration release; remove it only in a later major release after parity and user-facing migration notes.
 
-## Compute Strategy
+## Platform and Performance
 
-- Prefer GPU-backed execution for local inference workloads when the provider supports it.
-- Keep CPU fallback mandatory for transcription and local LLM flows so the CLI still works on machines without usable GPU acceleration.
-- Treat compute-device selection as an infrastructure and application concern, not a CLI-only shortcut.
-- See [compute_context.md](./compute_context.md) for the cross-stage policy.
-
-## Packaging
-
-- `src/` layout
-- Hatchling build backend
-- Package resources loaded with `importlib.resources`
-- End-user installation path is `uv tool install` or `pipx install`
-
-## Platform Constraints
-
-- Linux and macOS supported
-- Windows experimental
-- No GUI assumptions
-- No fragile repository-relative resource loading
+Linux and macOS are official targets. Windows is experimental until separately validated. Startup and memory goals are measured against [the recorded Python baseline](../migration/performance-baseline.md), with model loading and device inference reported separately from CLI and worker orchestration.

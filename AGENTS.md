@@ -1,95 +1,49 @@
-# AGENTS
+# Agent Instructions
 
-## Purpose
+## Product and Migration State
 
-`media-report-cli` is a distributable Python CLI that converts local media into traceable reporting artifacts. The package name is `media-report-cli`, the import package is `media_report`, and the global command is `media-report`.
+The target product is OrgDoc Runtime: a local Go CLI for agent-discoverable document capabilities, organization-specific brand consistency, and traceable artifacts. The Go module is `github.com/smaje/orgdoc`; its command is `orgdoc`. The first documents are invoice PDF and narrative Markdown report. Media workflows are optional capabilities. See `docs/product/agent-document-runtime.md` and the migration plan for scope and gates.
 
-## Required Architecture
+The existing `media-report-cli` Python package (`media_report`, command `media-report`) remains the compatibility implementation during migration. Do not remove or republish it under a new name before the compatibility release and later major-version cutover criteria pass.
 
-- Use hexagonal architecture with moderate vertical slicing.
-- Keep CLI concerns in `media_report.cli`.
-- Keep orchestration in `media_report.application`.
-- Keep business rules, entities, and ports in `media_report.domain`.
-- Keep adapters and subprocess or HTTP integrations in `media_report.infrastructure`.
-- Load packaged resources through `importlib.resources`.
+## Target Architecture
 
-## Release And Distribution Rules
+- Keep the Go core separated into CLI, application orchestration, domain/profile rules, and infrastructure.
+- Keep language-specific renderers and media processing in independently managed workers.
+- Use versioned JSON over stdin/stdout for worker requests and results. Send progress/diagnostics to stderr.
+- Execute declared worker entry points directly, without shell interpolation. Enforce timeouts, cancellation, resource-specific concurrency, and per-job artifact roots.
+- Validate organization and document configuration before starting workers. Resolve assets relative to the organization repository.
+- Keep brand appearance, document business rules, and agent skills as distinct inputs.
+- The core CLI must not require Python, ML dependencies, model loading, or network access for help, version, validation, and capability discovery.
 
-- Treat PyPI distribution as a first-class concern from the first commit.
-- Preserve `src/` layout.
-- Do not depend on repository-relative paths at runtime.
-- Keep Linux and macOS as the official targets.
-- Treat Windows as experimental and document regressions clearly.
+## Compatibility Rules
 
-## CLI Compatibility Rules
+- Preserve `media-report` as a shim for one migration release.
+- Keep current public workflows and artifact semantics available through that release; document any command or config key without a replacement.
+- Remove the old Python packaging only in a later major release after parity, migration notes, and release communication.
+- Linux and macOS are official targets; Windows remains experimental until validated.
 
-- Do not rename the root command `media-report`.
-- Keep bootstrap commands available:
-  - `process`
-  - `doctor`
-  - `config init`
-  - `config show`
-  - `templates list`
-- New options should be additive unless a deprecation path is documented.
+## Security and Data Integrity
 
-## Security Rules
+- Never print API keys or tokens. Redact secrets in config output, metadata, logs, and diagnostics.
+- Prefer local execution and make remote LLM use explicit and visible.
+- Reject ambiguous operation/brand resolution and unsupported schema versions before rendering.
+- Reject worker output paths outside the job directory. Failed runs preserve prior successful artifacts.
+- Humanizer may edit requested narrative prose only. Preserve amounts, identifiers, dates, quotations, citations, and typed values.
 
-- Never print API keys or tokens.
-- Redact secrets in config output, metadata, and logs.
-- Default to local execution paths where possible.
-- Emit a clear warning when the user chooses a remote LLM provider.
+## Testing and Verification
 
-## Testing Rules
-
-- Add or update unit tests for domain and adapter behavior.
-- Add integration tests for CLI entry points when public command behavior changes.
-- Keep heavy external dependencies mocked in tests unless a test is explicitly marked as an environment integration.
+- Add unit tests for domain, schema, worker, scheduler, and adapter behavior.
+- Add CLI integration tests when public command behavior changes.
+- Keep heavy external dependencies mocked unless a test is explicitly an environment integration.
+- Use test-first development for code changes and run the task-specific verification plus relevant full suite before marking a migration task complete.
+- Benchmark core startup, coordinator memory, worker RSS, and model/device work separately.
 
 ## Development Commands
 
-- `uv sync --extra dev`
-- `uv run pytest`
-- `uv run ruff check .`
-- `uv run ruff format .`
-- `uv run python -m build`
-- `uv run twine check dist/*`
+- Go: `gofmt -w`, `go vet ./...`, `go test ./...`
+- Legacy Python while present: `uv sync --extra dev`, `uv run pytest`, `uv run ruff check .`, `uv run ruff format .`, `uv run python -m build`, `uv run twine check dist/*`
 
 ## Commit Conventions
 
-- Use focused commits with conventional prefixes such as `feat:`, `fix:`, `docs:`, `test:`, or `chore:`.
-- Keep packaging, docs, and code changes separated when practical.
-
-## Extensibility Rules
-
-### Design Guidance
-
-- Validate each new abstraction or pattern against a concrete change pressure such as volatility, boundary isolation, invariants, or testability.
-- Prefer the simplest implementation that preserves the hexagonal boundaries; avoid speculative indirection when a local refactor or explicit flow is enough.
-
-### Adding An LLM Provider
-
-- Implement the `LLMProvider` port.
-- Keep HTTP client behavior inside infrastructure adapters.
-- Make provider selection explicit in configuration and application orchestration.
-- Persist raw prompt and response artifacts for traceability.
-
-### Adding A Transcription Provider
-
-- Implement the `TranscriptionProvider` port.
-- Keep model loading and inference logic outside the CLI layer.
-- Persist raw text, segment data, and provider metadata.
-
-### Adding A Report Template
-
-- Add the Markdown prompt template under `src/media_report/templates/prompts`.
-- Make it discoverable via `templates list`.
-- Document intended use and expected report structure.
-
-## Definition Of Done
-
-- Code follows the architecture boundaries above.
-- Tests cover the new behavior.
-- Public CLI help text remains coherent.
-- Packaged resources still work from installed contexts.
-- Secrets remain redacted.
-- Relevant docs are updated when the user-facing workflow changes.
+Use focused conventional prefixes such as `feat:`, `fix:`, `docs:`, `test:`, or `chore:`. Keep packaging, docs, and code changes separated where practical.

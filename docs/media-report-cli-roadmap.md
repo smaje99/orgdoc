@@ -1,4 +1,6 @@
-# Roadmap 4: Media Report CLI
+# Roadmap 4: Media Report CLI (legacy compatibility roadmap)
+
+> **Migration status (2026-10-14):** this roadmap describes the Python media capability and its compatibility obligations. The product direction is now **OrgDoc Runtime**, with organization-wide document consistency as the primary value and media processing as an optional capability pack. The task-by-task migration plan and authoritative product scope are in [agent-document-runtime-migration.md](superpowers/plans/2026-10-14-agent-document-runtime-migration.md) and [agent-document-runtime.md](product/agent-document-runtime.md). Keep this historical workflow detail for command and artifact parity; do not treat it as the primary product roadmap.
 
 Media Report CLI sigue siendo el proyecto más cercano a convertirse en un **producto técnico publicable** dentro de este portafolio. No necesita validación comercial compleja para empezar a generar valor; necesita estabilidad, pruebas reales, documentación, empaquetado y una versión instalable con un alcance honestamente definido.
 
