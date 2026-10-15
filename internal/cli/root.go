@@ -72,6 +72,7 @@ Options:
   document render --operation ID --document-type ID --input PATH --output-root PATH [--pre-humanized-text PATH]
   batch run JOBS.json [--organization PATH] [--output-root PATH] [--max-workers N]
 
+Worker code runs with the current user's OS permissions; manifest permissions do not sandbox workers.
 Exit codes: 0 success, 1 runtime error, 2 usage error.
 `
 

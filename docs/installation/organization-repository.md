@@ -37,4 +37,4 @@ orgdoc capabilities list --organization ./organization-docs --format json
 orgdoc doctor --organization ./organization-docs --format json
 ```
 
-Treat worker code as trusted local code: declared manifest permissions describe intended behavior but do not restrict OS access. Keep credentials out of organization files and document requests. See the [runtime guide](../product/agent-document-runtime.md) for the current boundary.
+Treat worker code as trusted local code: declared manifest permissions describe intended behavior but do not restrict OS access. Keep credentials out of organization files and document requests. See the [security model](../product/security-model.md) for the current boundary.

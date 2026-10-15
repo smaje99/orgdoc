@@ -27,7 +27,7 @@ Given a selected organization operation, document type, and valid input, OrgDoc 
 
 The runtime is a document consistency and execution layer, not a general writing agent. Skills explain how an agent should prepare and review work; schemas, validation, and renderers enforce the document contract.
 
-Capabilities are executable code owned by the organization repository and run with the current user's operating-system permissions. Manifest permission declarations describe intended access; they are not an operating-system sandbox. The runner constrains time, captured output, concurrency, and accepted artifact paths, so organizations should only enable capability code they trust.
+Capabilities are executable code owned by the organization repository and run with the current user's operating-system permissions. Manifest permission declarations describe intended access; they are not an operating-system sandbox. The runner constrains time, captured output, concurrency, inherited environment variables, and accepted artifact paths, so organizations should only enable capability code they trust. See the [security model](security-model.md) for exact controls and limits.
 
 ## Profile format v1
 

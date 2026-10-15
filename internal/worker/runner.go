@@ -10,7 +10,9 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"regexp"
 	"runtime"
+	"sort"
 	"strings"
 	"sync"
 	"time"
@@ -24,6 +26,19 @@ type Runner struct {
 	mu         sync.Mutex
 	semaphores map[ResourceClass]chan struct{}
 }
+
+var workerEnvironmentAllowlist = map[string]struct{}{
+	"APPDATA": {}, "CUDA_HOME": {}, "CUDA_VISIBLE_DEVICES": {}, "HF_HOME": {}, "HF_HUB_CACHE": {},
+	"HOMEDRIVE": {}, "HOMEPATH": {}, "HOME": {}, "HUGGINGFACE_HUB_CACHE": {}, "LANG": {},
+	"LOCALAPPDATA": {}, "LOGNAME": {}, "MEDIA_REPORT_LLM_MODEL": {}, "MEDIA_REPORT_LLM_PROVIDER": {},
+	"MEDIA_REPORT_LOG_LEVEL": {}, "MEDIA_REPORT_OLLAMA_BASE_URL": {}, "MEDIA_REPORT_OPENAI_API_KEY": {},
+	"MEDIA_REPORT_OPENAI_BASE_URL": {}, "MEDIA_REPORT_OUTPUT_FORMAT": {}, "MEDIA_REPORT_WHISPER_DEVICE": {},
+	"MEDIA_REPORT_WHISPER_MODEL": {}, "NO_COLOR": {}, "PATH": {}, "SYSTEMROOT": {}, "TEMP": {}, "TMP": {},
+	"TMPDIR": {}, "TORCH_HOME": {}, "USER": {}, "USERPROFILE": {}, "WINDIR": {}, "XDG_CACHE_HOME": {},
+	"XDG_CONFIG_HOME": {}, "XDG_DATA_HOME": {},
+}
+
+var sensitiveAssignmentPattern = regexp.MustCompile(`(?i)(["']?(authorization|api[_-]?key|access[_-]?token|refresh[_-]?token|token|password|client[_-]?secret)["']?\s*[:=]\s*["']?(bearer|basic)?\s*)[^"'\s,;}]+`)
 
 func NewRunner(limits ResourceLimits, defaultTimeout time.Duration) *Runner {
 	copyLimits := make(ResourceLimits, len(limits))
@@ -62,6 +77,7 @@ func (r *Runner) acquire(ctx context.Context, class ResourceClass) (func(), erro
 
 func (r *Runner) Run(ctx context.Context, capability Capability, request WorkerRequest) (WorkerResult, error) {
 	fail := func(code, message string) (WorkerResult, error) {
+		code, message = redact(code), redact(message)
 		return WorkerResult{ProtocolVersion: ProtocolVersion, JobID: request.JobID, Status: WorkerStatusFailed, Diagnostics: []WorkerDiagnostic{{Code: code, Message: message}}}, errors.New(message)
 	}
 	if len(capability.EntryPoint) == 0 || strings.TrimSpace(capability.EntryPoint[0]) == "" {
@@ -115,6 +131,7 @@ platformSupported:
 	command := exec.CommandContext(workerCtx, capability.EntryPoint[0], capability.EntryPoint[1:]...)
 	configureProcess(command)
 	command.Dir = artifactDir
+	command.Env = childProcessEnvironment(os.Environ())
 	command.Stdin = bytes.NewReader(encoded)
 	maxBytes := capability.MaxOutputBytes
 	if maxBytes <= 0 {
@@ -158,6 +175,10 @@ platformSupported:
 	}
 	if result.Status != WorkerStatusSucceeded && result.Status != WorkerStatusFailed {
 		return fail("protocol_error", "worker result status must be succeeded or failed")
+	}
+	for index := range result.Diagnostics {
+		result.Diagnostics[index].Code = redact(result.Diagnostics[index].Code)
+		result.Diagnostics[index].Message = redact(result.Diagnostics[index].Message)
 	}
 	for _, output := range result.Outputs {
 		if err := validateOutputPath(artifactDir, output.Path); err != nil {
@@ -234,15 +255,31 @@ func validateOutputPath(root, output string) error {
 }
 
 func redact(text string) string {
-	lines := strings.Split(text, "\n")
-	for i, line := range lines {
-		lower := strings.ToLower(line)
-		for _, marker := range []string{"api_key=", "token=", "authorization:", "password="} {
-			if index := strings.Index(lower, marker); index >= 0 {
-				lines[i] = line[:index] + marker + "[REDACTED]"
-				break
-			}
+	return strings.TrimSpace(sensitiveAssignmentPattern.ReplaceAllString(text, "${1}[REDACTED]"))
+}
+
+func childProcessEnvironment(environment []string) []string {
+	selected := make(map[string]string, len(workerEnvironmentAllowlist))
+	for _, item := range environment {
+		name, _, found := strings.Cut(item, "=")
+		if !found {
+			continue
 		}
+		key := strings.ToUpper(name)
+		_, allowed := workerEnvironmentAllowlist[key]
+		if !allowed && !strings.HasPrefix(key, "LC_") {
+			continue
+		}
+		selected[key] = item
 	}
-	return strings.TrimSpace(strings.Join(lines, "\n"))
+	keys := make([]string, 0, len(selected))
+	for key := range selected {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	filtered := make([]string, 0, len(keys))
+	for _, key := range keys {
+		filtered = append(filtered, selected[key])
+	}
+	return filtered
 }

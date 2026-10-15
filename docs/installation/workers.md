@@ -25,4 +25,6 @@ orgdoc doctor --organization ./organization-docs --format json
 
 Worker code runs with the current user's operating-system permissions. Capability `permissions` describe intended access; they do not restrict filesystem or network access. Install and run only worker code trusted by the organization.
 
+The runner filters inherited environment variables, preserves the configured `MEDIA_REPORT_OPENAI_API_KEY` for the explicitly selected OpenAI-compatible provider, and redacts common credential forms from worker stderr and diagnostics. This is not a sandbox or complete secret detector. See the [security model](../product/security-model.md) for the exact allowlist, timeout behavior, and limitations.
+
 Spreadsheet, presentation, and PDF form workers are planned capabilities and do not have release bundles yet. Their exact prerequisites will be added here when those workers are implemented.

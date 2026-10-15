@@ -27,6 +27,8 @@ The source checkout also includes `scripts/install-orgdoc.sh VERSION`, which dow
 
 The extracted core archive also includes `install-worker.sh`. After installing `uv` and a supported Python version, install only a needed worker with `./install-worker.sh reportlab-invoice 0.1.0`, replacing `0.1.0` with the OrgDoc release version. This verifies the worker bundle checksum, creates an isolated environment under the user data directory, and links its commands into `$HOME/.local/bin`. FFmpeg, Pandoc/TeX, GPU drivers, and ML models remain separate prerequisites and are not installed by this script.
 
+Worker bundles contain executable code. Install and run only workers trusted by the organization. SHA-256 verification detects corruption but does not authenticate the publisher; workers run with the current user's operating-system permissions. See the [security model](docs/product/security-model.md) for enforced controls and their limits.
+
 Core archives include the portable agent Skill at `skills/orgdoc/SKILL.md`. Copy it into the project-level or user-level Skills directory documented by the chosen agent. OrgDoc does not choose that directory or install Skills globally; see [agent Skill setup](docs/installation/agents.md).
 
 ## Build from source

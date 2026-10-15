@@ -160,6 +160,7 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Create: `docs/product/security-model.md`
 - Modify: `internal/worker/runner.go`, worker protocol/manifests, and tests only for concrete controls chosen below
 - Modify: `docs/product/agent-document-runtime.md`, `INSTALL.md`, and `docs/installation/workers.md`
+- Modify: `scripts/build-release.sh`, `scripts/tests/test-release-packaging.sh`
 
 **Interfaces:**
 - The security guide separates enforced runtime controls from policy declarations and future OS-level isolation.
