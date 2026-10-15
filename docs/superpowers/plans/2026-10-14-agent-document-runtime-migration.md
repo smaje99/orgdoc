@@ -135,10 +135,10 @@ Human-readable output is for direct users. Every command used by agents supports
 - Consumes: final command name and compatibility policy from Task 1.
 - Produces: `Run(args []string, stdin io.Reader, stdout, stderr io.Writer) int`, version/help handling, `--format human|json`, and stable exit-code constants.
 
-- [ ] Add tests for no-argument help, `--help`, `--version`, JSON error shape, and documented exit codes.
-- [ ] Implement a minimal Go command that passes those tests without importing organization config or worker packages.
-- [ ] Add Go formatting, vetting, and test commands to the developer workflow and CI.
-- [ ] Measure `--help` startup/RSS against Task 1 baseline and record results.
+- [x] Add tests for no-argument help, `--help`, `--version`, JSON error shape, and documented exit codes.
+- [x] Implement a minimal Go command that passes those tests without importing organization config or worker packages.
+- [x] Add Go formatting, vetting, and test commands to the developer workflow and CI.
+- [x] Measure `--help` startup/RSS against Task 1 baseline and record results.
 
 **Acceptance:** The binary handles help/version without Python, model, network, or organization repository initialization; machine-readable errors have a stable envelope.
 
