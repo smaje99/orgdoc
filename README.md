@@ -6,7 +6,7 @@ The Go core is independent of Python, media models, and network services. Option
 
 ## Install OrgDoc
 
-Download a release archive for Linux or macOS from the [GitHub Releases page](https://github.com/smaje99/orgdoc/releases). Each archive includes the `orgdoc` executable, `INSTALL.md`, and `LICENSE`; `SHA256SUMS` is published alongside the archives.
+Download the portable `.tar.gz` release archive matching your operating system and architecture from the [GitHub Releases page](https://github.com/smaje99/orgdoc/releases). Releases include Linux and macOS builds for `amd64` and `arm64`; each archive contains the `orgdoc` executable, `INSTALL.md`, and `LICENSE`, with `SHA256SUMS` published alongside them. Install into a user-owned directory without administrator access; the core archive does not include Python or optional workers.
 
 To build all supported binaries from a source checkout:
 

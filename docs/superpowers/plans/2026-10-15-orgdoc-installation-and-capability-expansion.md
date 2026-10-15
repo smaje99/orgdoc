@@ -82,12 +82,12 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Produces core assets named `orgdoc-<version>-<os>-<arch>.tar.gz` for Linux/macOS `amd64` and `arm64`, plus one `SHA256SUMS` file.
 - The installer accepts a version and optional `INSTALL_DIR`; it defaults to the `smaje99/orgdoc` GitHub Releases URL and installs `orgdoc` into `$HOME/.local/bin`.
 
-- [ ] Add packager checks for all four expected archives, archive contents (`orgdoc`, `INSTALL.md`, `LICENSE`), and checksums.
-- [ ] Fix the installer default repository from `smaje99/media-report-cli` to `smaje99/orgdoc`; retain an explicit environment override for mirrors/testing.
-- [ ] Verify installer behavior for valid checksum, missing asset/checksum, invalid checksum, unsupported platform, and custom install directory using a local file URL fixture.
-- [ ] Keep the core archive worker-free; smoke-test help, version, organization validation, and capability discovery with an empty `PATH`.
-- [ ] Document that the initial downloadable formats are portable archives; do not advertise native package-manager installers.
-- [ ] Run the packaging and clean-path smoke checks, then commit as `🔧 chore(release): package and install core binaries`.
+- [x] Add packager checks for all four expected archives, archive contents (`orgdoc`, `INSTALL.md`, `LICENSE`), and checksums.
+- [x] Fix the installer default repository from `smaje99/media-report-cli` to `smaje99/orgdoc`; retain an explicit environment override for mirrors/testing.
+- [x] Verify installer behavior for valid checksum, missing asset/checksum, invalid checksum, unsupported platform, and custom install directory using a local file URL fixture.
+- [x] Keep the core archive worker-free; smoke-test help, version, organization validation, and capability discovery with an empty `PATH`.
+- [x] Document that the initial downloadable formats are portable archives; do not advertise native package-manager installers.
+- [x] Run the packaging and clean-path smoke checks, then commit as `🔧 chore(release): package and install core binaries`.
 
 ### Task 2: Package optional worker bundles for GitHub Releases
 

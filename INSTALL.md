@@ -4,6 +4,8 @@ This file ships inside each release archive. Supported release targets are Linux
 
 ## Verify and install
 
+Releases use portable `.tar.gz` archives for Linux and macOS (`amd64` and `arm64`). The core package is a standalone executable; Python workers and their system dependencies are installed separately when needed. Native package-manager installers such as `.deb`, `.rpm`, and `.pkg` are not provided in this release format.
+
 Download the archive for your operating system and architecture, and `SHA256SUMS` from the same GitHub release. Verify the selected archive before extracting it:
 
 ```sh
@@ -21,7 +23,7 @@ install -m 755 orgdoc "$HOME/.local/bin/orgdoc"
 
 Replace the archive name for your target. Add `$HOME/.local/bin` to `PATH` if needed, then check `orgdoc --version` and `orgdoc --help`. No administrator privileges are required.
 
-The source checkout also includes `scripts/install-orgdoc.sh VERSION`, which downloads the selected release asset, verifies its SHA-256 checksum, and installs to `$HOME/.local/bin` by default. Set `INSTALL_DIR` to choose another user-writable directory.
+The source checkout also includes `scripts/install-orgdoc.sh VERSION`, which downloads the selected release asset from `smaje99/orgdoc`, verifies its SHA-256 checksum, and installs to `$HOME/.local/bin` by default. Set `INSTALL_DIR` to choose another user-writable directory. Set `ORGDOC_REPOSITORY` to use a mirror, or `ORGDOC_RELEASE_BASE_URL` to install from a local release directory during testing.
 
 ## Build from source
 

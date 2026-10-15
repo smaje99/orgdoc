@@ -10,7 +10,7 @@ VERSION=${1#v}
 case "$VERSION" in
   "" | *[!A-Za-z0-9.+-]*) echo "invalid release version: $VERSION" >&2; exit 2 ;;
 esac
-REPOSITORY=${ORGDOC_REPOSITORY:-smaje99/media-report-cli}
+REPOSITORY=${ORGDOC_REPOSITORY:-smaje99/orgdoc}
 INSTALL_DIR=${INSTALL_DIR:-"${HOME:?HOME must be set}/.local/bin"}
 OS=$(uname -s | tr '[:upper:]' '[:lower:]')
 ARCH=$(uname -m)
