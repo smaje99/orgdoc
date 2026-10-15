@@ -44,6 +44,8 @@ func RunContext(ctx context.Context, args []string, stdin io.Reader, stdout, std
 		return runContext(commandArgs[1:], format, stdout, stderr)
 	case "document":
 		return runDocument(ctx, commandArgs[1:], format, stdin, stdout, stderr)
+	case "batch":
+		return runBatch(ctx, commandArgs[1:], format, stdout, stderr)
 	default:
 		writeError(stderr, format, "usage_error", fmt.Sprintf("unknown command %q", commandArgs[0]))
 		return ExitUsage
@@ -52,7 +54,7 @@ func RunContext(ctx context.Context, args []string, stdin io.Reader, stdout, std
 
 const helpText = `OrgDoc Runtime applies organization document rules and brand profiles.
 
-Usage: orgdoc [--format human|json] [--help|--version|capabilities|organization|brands|context|document]
+Usage: orgdoc [--format human|json] [--help|--version|capabilities|organization|brands|context|document|batch]
 
 Options:
   --format FORMAT  Select human or JSON output for diagnostics.
@@ -64,6 +66,7 @@ Options:
   brands list [--organization PATH]             List organization brands.
   context --operation ID --document-type ID      Build selected renderer context.
   document render --operation ID --document-type ID --input PATH --output-root PATH [--pre-humanized-text PATH]
+  batch run JOBS.json [--organization PATH] [--output-root PATH] [--max-workers N]
 
 Exit codes: 0 success, 1 runtime error, 2 usage error.
 `

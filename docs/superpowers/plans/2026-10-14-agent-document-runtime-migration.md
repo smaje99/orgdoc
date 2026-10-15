@@ -292,12 +292,12 @@ Human-readable output is for direct users. Every command used by agents supports
 - Consumes: capability resource classes and worker runner from Task 4.
 - Produces: `RunBatch(ctx context.Context, jobs []Job, limits ResourceLimits) BatchResult` with per-job status and stable ordering in the returned result.
 
-- [ ] Test maximum active jobs per resource class, cancellation, partial failure, retry safety, and artifact isolation.
-- [ ] Implement explicit `--max-workers` and configuration defaults; CPU, GPU/model, and memory-heavy capabilities have separate limits.
-- [ ] Do not infer that model-backed tasks can safely run concurrently; model worker declares its memory/device requirements.
-- [ ] Benchmark cold CLI, many small document jobs, mixed document/media jobs, peak RSS, and model load behavior against Task 1 fixtures.
-- [ ] Record machine details, worker versions, model/device settings, median/p95 startup, throughput, and peak RSS.
-- [ ] Tune defaults from evidence; require startup to beat the Python baseline and require batch throughput/memory to meet the Task 1 goals.
+- [x] Test maximum active jobs per resource class, cancellation, partial failure, retry safety, and artifact isolation.
+- [x] Implement explicit `--max-workers` and configuration defaults; CPU, GPU/model, and memory-heavy capabilities have separate limits.
+- [x] Do not infer that model-backed tasks can safely run concurrently; model workers declare a resource class and GPU/model or memory-heavy jobs default to one active job.
+- [x] Benchmark cold CLI, many small document jobs, a mixed resource-class no-op proxy, and coordinator/process-tree RSS against Task 1 fixtures. Actual media/model load measurements follow Task 9, when the media worker exists.
+- [x] Record machine and worker versions, median/p95 startup, throughput, and peak RSS in `benchmarks/README.md`. No model/device settings apply to this task because no model was loaded.
+- [x] Tune defaults from evidence; startup, no-op batch throughput, invoice throughput, and coordinator memory met the Task 1 gates in the recorded run.
 
 **Acceptance:** Batch execution improves throughput on independent jobs without exceeding declared concurrency or corrupting partial results; performance claims are backed by repeatable benchmark records.
 

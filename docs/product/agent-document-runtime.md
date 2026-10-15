@@ -41,6 +41,49 @@ orgdoc capabilities list --organization PATH --format json
 orgdoc brands list --organization PATH --format json
 orgdoc context --organization PATH --operation ID --document-type ID --format json
 orgdoc document render --organization PATH --operation ID --document-type ID --input INPUT.json --output-root ARTIFACTS --format json [--pre-humanized-text ORIGINAL.md]
+orgdoc batch run JOBS.json --max-workers 4 --format json
 ```
 
 Each render uses a new `job_id` directory and writes `run-manifest.json` with selected profile and capability versions, input references, timestamps, output paths, and stage statuses. Reusing an existing job ID fails without changing its artifacts. Send `--input -` to read the JSON request from standard input. Pass `--pre-humanized-text ORIGINAL.md` when the original prose should be retained verbatim in the run record.
+
+Batch input is a versioned JSON file. Organization and output paths are resolved relative to that file when they are not absolute. Each job uses the same operation, document type, and typed input fields as `document render`:
+
+```json
+{
+  "schema_version": 1,
+  "organization": "./organization-docs",
+  "output_root": "./artifacts",
+  "jobs": [
+    {
+      "job_id": "invoice-2026-001",
+      "operation": "consulting",
+      "document_type": "invoice",
+      "input": {
+        "invoice_number": "HT-2026-001",
+        "issue_date": "2026-10-14",
+        "due_date": "2026-10-28",
+        "customer": {
+          "name": "Cliente de ejemplo",
+          "tax_id": "900000000-1",
+          "address": "Bogotá, Colombia"
+        },
+        "lines": [
+          {
+            "description": "Servicio de consultoría",
+            "quantity": 1,
+            "unit_price": 100000,
+            "tax_rate": 0.19,
+            "total": 100000
+          }
+        ],
+        "subtotal": 100000,
+        "tax_total": 19000,
+        "grand_total": 119000,
+        "currency": "COP"
+      }
+    }
+  ]
+}
+```
+
+Results retain input order. A failed job does not prevent independent jobs from completing; reusing a job ID leaves its previous artifacts unchanged. `--max-workers` sets the total and CPU concurrency. GPU/model and memory-heavy capabilities remain limited to one active job each by default.
