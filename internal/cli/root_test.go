@@ -45,6 +45,15 @@ func TestRunHelpListsDoctorCommand(t *testing.T) {
 	}
 }
 
+func TestRunHelpListsOrganizationInitCommand(t *testing.T) {
+	var stdout, stderr bytes.Buffer
+
+	code := Run([]string{"--help"}, strings.NewReader(""), &stdout, &stderr)
+	if code != ExitSuccess || !strings.Contains(stdout.String(), "organization init --path PATH") {
+		t.Fatalf("help output does not document organization init: (%d, %q, %q)", code, stdout.String(), stderr.String())
+	}
+}
+
 func TestRunVersionFlagShowsVersion(t *testing.T) {
 	var stdout, stderr bytes.Buffer
 

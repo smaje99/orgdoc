@@ -140,17 +140,19 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Create: `docs/installation/agents.md`
 - Create: `docs/installation/organization-repository.md`
 - Modify: `internal/cli/organization.go`, `internal/cli/root.go`, and corresponding tests if adding initialization
+- Modify: `scripts/build-release.sh`, `scripts/tests/test-release-packaging.sh`
+- Modify: `README.md`, `INSTALL.md`
 - Modify: `examples/organization-docs/` only for documented setup corrections
 
 **Interfaces:**
 - The portable `orgdoc` Skill explains capability discovery, explicit operation/brand selection, JSON CLI invocation, artifact review, and untrusted-input handling.
 - `orgdoc organization init --path PATH` copies the versioned example scaffold without overwriting existing files and prints the next validation command.
 
-- [ ] Add Skill examples for discovering capabilities, resolving a brand context, rendering an invoice/report, and running doctor; identify Humanizer as an optional separate Skill.
-- [ ] Document project-local and user-level Skill installation without assuming every agent uses the same directory.
-- [ ] Add tests for organization scaffold success and existing destination refusal; do not implement `--force` in this phase.
-- [ ] Ensure organization Skills remain owned by the organization repository and are never silently installed into a user's global Skills directory.
-- [ ] Run the relevant CLI tests and commit as `📚 docs(agents): package the OrgDoc CLI skill`.
+- [x] Add Skill examples for discovering capabilities, resolving a brand context, rendering an invoice/report, and running doctor; identify Humanizer as an optional separate Skill.
+- [x] Document project-local and user-level Skill installation without assuming every agent uses the same directory.
+- [x] Add tests for organization scaffold success and existing destination refusal; do not implement `--force` in this phase.
+- [x] Ensure organization Skills remain owned by the organization repository and are never silently installed into a user's global Skills directory.
+- [x] Run the relevant CLI tests and commit as `📚 docs(agents): package the OrgDoc CLI skill`.
 
 ### Task 5: Define and implement the worker trust and security boundary
 

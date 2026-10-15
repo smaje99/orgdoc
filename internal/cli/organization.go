@@ -5,10 +5,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/fs"
 	"os"
+	"path/filepath"
 	"sort"
 	"strings"
 
+	"github.com/smaje99/orgdoc/examples"
 	"github.com/smaje99/orgdoc/internal/document"
 	"github.com/smaje99/orgdoc/internal/orgconfig"
 )
@@ -61,8 +64,20 @@ func parseOrganizationOptions(args []string) (organizationOptions, error) {
 }
 
 func runOrganization(args []string, format string, stdout, stderr io.Writer) int {
-	if len(args) == 0 || args[0] != "validate" {
-		writeError(stderr, format, "usage_error", "usage: orgdoc organization validate [--organization PATH]")
+	if len(args) == 0 {
+		writeError(stderr, format, "usage_error", "usage: orgdoc organization <init|validate>")
+		return ExitUsage
+	}
+	if args[0] == "init" {
+		destination, err := parseOrganizationInitPath(args[1:])
+		if err != nil {
+			writeError(stderr, format, "usage_error", err.Error())
+			return ExitUsage
+		}
+		return initializeOrganization(destination, stdout, stderr, format)
+	}
+	if args[0] != "validate" {
+		writeError(stderr, format, "usage_error", "usage: orgdoc organization <init|validate>")
 		return ExitUsage
 	}
 	options, err := parseOrganizationOptions(args[1:])
@@ -88,6 +103,121 @@ func runOrganization(args []string, format string, stdout, stderr io.Writer) int
 		return ExitError
 	}
 	return ExitSuccess
+}
+
+func parseOrganizationInitPath(args []string) (string, error) {
+	var destination string
+	for index := 0; index < len(args); index++ {
+		arg := args[index]
+		var value string
+		switch {
+		case arg == "--path":
+			if index+1 >= len(args) || strings.HasPrefix(args[index+1], "--") {
+				return "", fmt.Errorf("--path requires a destination path")
+			}
+			index++
+			value = args[index]
+		case strings.HasPrefix(arg, "--path="):
+			value = strings.TrimPrefix(arg, "--path=")
+		default:
+			return "", fmt.Errorf("unknown organization init argument %q", arg)
+		}
+		if strings.TrimSpace(value) == "" {
+			return "", fmt.Errorf("--path requires a non-empty destination path")
+		}
+		if destination != "" {
+			return "", fmt.Errorf("--path may be provided only once")
+		}
+		destination = value
+	}
+	if destination == "" {
+		return "", fmt.Errorf("organization init requires --path PATH")
+	}
+	return destination, nil
+}
+
+func initializeOrganization(destination string, stdout, stderr io.Writer, format string) int {
+	absoluteDestination, err := filepath.Abs(destination)
+	if err != nil {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("resolve destination: %v", err))
+		return ExitError
+	}
+	if _, err := os.Lstat(absoluteDestination); err == nil {
+		writeError(stderr, format, "already_exists", fmt.Sprintf("destination %q already exists; choose a new path", destination))
+		return ExitError
+	} else if !os.IsNotExist(err) {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("inspect destination: %v", err))
+		return ExitError
+	}
+	parent := filepath.Dir(absoluteDestination)
+	if err := os.MkdirAll(parent, 0o755); err != nil {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("create destination parent: %v", err))
+		return ExitError
+	}
+	stage, err := os.MkdirTemp(parent, ".orgdoc-organization-init-*")
+	if err != nil {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("stage organization scaffold: %v", err))
+		return ExitError
+	}
+	defer os.RemoveAll(stage)
+	if err := os.Chmod(stage, 0o755); err != nil {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("set scaffold directory permissions: %v", err))
+		return ExitError
+	}
+	if err := copyOrganizationScaffold(stage); err != nil {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("copy organization scaffold: %v", err))
+		return ExitError
+	}
+	if _, err := os.Lstat(absoluteDestination); err == nil {
+		writeError(stderr, format, "already_exists", fmt.Sprintf("destination %q already exists; choose a new path", destination))
+		return ExitError
+	} else if !os.IsNotExist(err) {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("inspect destination: %v", err))
+		return ExitError
+	}
+	if err := os.Rename(stage, absoluteDestination); err != nil {
+		writeError(stderr, format, "organization_error", fmt.Sprintf("install organization scaffold: %v", err))
+		return ExitError
+	}
+	if format == "json" {
+		_ = json.NewEncoder(stdout).Encode(struct {
+			Path        string   `json:"path"`
+			NextCommand []string `json:"next_command"`
+		}{
+			Path: destination, NextCommand: []string{"orgdoc", "organization", "validate", "--organization", destination},
+		})
+		return ExitSuccess
+	}
+	_, _ = fmt.Fprintf(stdout, "Initialized organization scaffold at %s\nNext: orgdoc organization validate --organization %s\n", destination, shellQuote(destination))
+	return ExitSuccess
+}
+
+func shellQuote(value string) string {
+	return "'" + strings.ReplaceAll(value, "'", "'\"'\"'") + "'"
+}
+
+func copyOrganizationScaffold(destination string) error {
+	return fs.WalkDir(examples.OrganizationDocs, "organization-docs", func(source string, entry fs.DirEntry, walkErr error) error {
+		if walkErr != nil {
+			return walkErr
+		}
+		relative := strings.TrimPrefix(source, "organization-docs/")
+		if relative == "organization-docs" {
+			relative = "."
+		}
+		if relative == "." {
+			return nil
+		}
+		target := filepath.Join(destination, filepath.FromSlash(relative))
+		if entry.IsDir() {
+			return os.MkdirAll(target, 0o755)
+		}
+		contents, err := fs.ReadFile(examples.OrganizationDocs, source)
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(target, contents, 0o644)
+	})
 }
 
 func runBrands(args []string, format string, stdout, stderr io.Writer) int {

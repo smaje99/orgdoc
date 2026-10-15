@@ -32,6 +32,10 @@ for TARGET in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
       ./cmd/orgdoc
   )
   cp "$ROOT/INSTALL.md" "$ROOT/LICENSE" "$ROOT/scripts/install-worker.sh" "$PACKAGE_DIR/"
+  mkdir -p "$PACKAGE_DIR/skills/orgdoc"
+  cp "$ROOT/skills/orgdoc/SKILL.md" "$PACKAGE_DIR/skills/orgdoc/"
+  mkdir -p "$PACKAGE_DIR/docs/installation"
+  cp "$ROOT/docs/installation/agents.md" "$PACKAGE_DIR/docs/installation/"
   tar -C "$PACKAGE_DIR" -czf "$OUTPUT_DIR/$ASSET" .
 done
 

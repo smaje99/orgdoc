@@ -6,7 +6,7 @@ The Go core is independent of Python, media models, and network services. Option
 
 ## Install OrgDoc
 
-Download the portable `.tar.gz` release archive matching your operating system and architecture from the [GitHub Releases page](https://github.com/smaje99/orgdoc/releases). Releases include Linux and macOS builds for `amd64` and `arm64`; each archive contains the `orgdoc` executable, `INSTALL.md`, and `LICENSE`, with `SHA256SUMS` published alongside them. Install into a user-owned directory without administrator access; the core archive does not include Python or optional workers.
+Download the portable `.tar.gz` release archive matching your operating system and architecture from the [GitHub Releases page](https://github.com/smaje99/orgdoc/releases). Releases include Linux and macOS builds for `amd64` and `arm64`; each archive contains the `orgdoc` executable, install and license documentation, the optional worker installer, and the portable OrgDoc agent Skill. `SHA256SUMS` is published alongside them. Install into a user-owned directory without administrator access; the core archive does not include Python or optional workers.
 
 To build all supported binaries from a source checkout:
 
@@ -24,10 +24,10 @@ See [installation details](INSTALL.md) for checksum verification, install paths,
 
 ## Start with an organization repository
 
-Copy the example repository and validate it:
+Create an organization repository from the scaffold packaged into the CLI and validate it:
 
 ```sh
-cp -R examples/organization-docs "$HOME/orgdoc-organization"
+orgdoc organization init --path "$HOME/orgdoc-organization"
 orgdoc organization validate --organization "$HOME/orgdoc-organization" --format json
 orgdoc brands list --organization "$HOME/orgdoc-organization" --format json
 orgdoc capabilities list --organization "$HOME/orgdoc-organization" --format json

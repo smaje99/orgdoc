@@ -65,6 +65,7 @@ Options:
   capabilities list [--organization PATH]       List validated capabilities.
   capabilities describe ID [--organization PATH] Show one capability manifest.
   doctor [--organization PATH]                  Check declared worker installations and prerequisites.
+  organization init --path PATH                 Copy the packaged organization scaffold.
   organization validate [--organization PATH]   Validate organization profiles.
   brands list [--organization PATH]             List organization brands.
   context --operation ID --document-type ID      Build selected renderer context.

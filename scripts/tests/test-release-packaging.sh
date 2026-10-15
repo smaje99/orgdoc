@@ -22,6 +22,8 @@ for TARGET in linux-amd64 linux-arm64 darwin-amd64 darwin-arm64; do
   tar -tzf "$ARCHIVE" | grep -Eq '(^|/)INSTALL\.md$'
   tar -tzf "$ARCHIVE" | grep -Eq '(^|/)LICENSE$'
   tar -tzf "$ARCHIVE" | grep -Eq '(^|/)install-worker\.sh$'
+  tar -tzf "$ARCHIVE" | grep -Eq '(^|/)skills/orgdoc/SKILL\.md$'
+  tar -tzf "$ARCHIVE" | grep -Eq '(^|/)docs/installation/agents\.md$'
   if tar -tzf "$ARCHIVE" | grep -Eiq '(^|/)(workers?|python|\.venv)(/|$)'; then
     echo "$ASSET unexpectedly contains worker files" >&2
     exit 1
