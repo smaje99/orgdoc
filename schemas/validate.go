@@ -1,4 +1,4 @@
-package orgconfig
+package schemas
 
 import (
 	"bytes"
@@ -8,54 +8,51 @@ import (
 	"sync"
 
 	"github.com/santhosh-tekuri/jsonschema/v6"
-	orgschemas "github.com/smaje/orgdoc/schemas"
 )
 
 var (
-	schemaMu    sync.Mutex
-	compiled    = make(map[string]*jsonschema.Schema)
-	schemaFiles = []string{
+	validationMu   sync.Mutex
+	compiledSchema = make(map[string]*jsonschema.Schema)
+	schemaFiles    = []string{
 		"organization.schema.json",
 		"brand.schema.json",
 		"operation.schema.json",
 		"document-type.schema.json",
+		"capability.schema.json",
 	}
 )
 
-type schemaValidationError struct {
+// ValidationError carries the most specific instance field available from JSON Schema.
+type ValidationError struct {
 	Field string
 	Err   error
 }
 
-func (validationError schemaValidationError) Error() string {
-	return validationError.Err.Error()
-}
+func (validationError ValidationError) Error() string { return validationError.Err.Error() }
+func (validationError ValidationError) Unwrap() error { return validationError.Err }
 
-func (validationError schemaValidationError) Unwrap() error {
-	return validationError.Err
-}
-
-func validateSchema(name string, instance any) error {
-	schema, err := compiledSchema(name)
+// Validate checks an instance against a packaged JSON Schema without network access.
+func Validate(name string, instance any) error {
+	schema, err := schemaFor(name)
 	if err != nil {
 		return fmt.Errorf("load packaged schema %q: %w", name, err)
 	}
 	if err := schema.Validate(instance); err != nil {
-		return schemaValidationError{Field: schemaField(err), Err: err}
+		return ValidationError{Field: schemaField(err), Err: err}
 	}
 	return nil
 }
 
-func compiledSchema(name string) (*jsonschema.Schema, error) {
-	schemaMu.Lock()
-	defer schemaMu.Unlock()
-	if schema, ok := compiled[name]; ok {
+func schemaFor(name string) (*jsonschema.Schema, error) {
+	validationMu.Lock()
+	defer validationMu.Unlock()
+	if schema, ok := compiledSchema[name]; ok {
 		return schema, nil
 	}
 	compiler := jsonschema.NewCompiler()
 	compiler.DefaultDraft(jsonschema.Draft2020)
 	for _, file := range schemaFiles {
-		contents, err := orgschemas.Read(file)
+		contents, err := Read(file)
 		if err != nil {
 			return nil, err
 		}
@@ -67,12 +64,11 @@ func compiledSchema(name string) (*jsonschema.Schema, error) {
 			return nil, fmt.Errorf("register %s: %w", file, err)
 		}
 	}
-	location := "https://orgdoc.dev/schemas/" + name
-	schema, err := compiler.Compile(location)
+	schema, err := compiler.Compile("https://orgdoc.dev/schemas/" + name)
 	if err != nil {
 		return nil, err
 	}
-	compiled[name] = schema
+	compiledSchema[name] = schema
 	return schema, nil
 }
 

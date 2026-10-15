@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
+	orgschemas "github.com/smaje/orgdoc/schemas"
 	"gopkg.in/yaml.v3"
 )
 
@@ -104,7 +105,7 @@ func decodeYAML(path, schemaName string, destination any) error {
 		}
 		return err
 	}
-	if err := validateSchema(schemaName, raw); err != nil {
+	if err := orgschemas.Validate(schemaName, raw); err != nil {
 		return err
 	}
 	encoded, err := yaml.Marshal(raw)
@@ -115,7 +116,7 @@ func decodeYAML(path, schemaName string, destination any) error {
 }
 
 func decodeDiagnostic(file string, err error) Diagnostic {
-	var schemaErr schemaValidationError
+	var schemaErr orgschemas.ValidationError
 	if errors.As(err, &schemaErr) {
 		if schemaErr.Field == "schema_version" {
 			return Diagnostic{File: filepath.ToSlash(file), Field: schemaErr.Field, Code: "unsupported_schema_version", Message: "unsupported schema version; this CLI supports schema version 1"}

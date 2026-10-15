@@ -27,6 +27,8 @@ Given a selected organization operation, document type, and valid input, OrgDoc 
 
 The runtime is a document consistency and execution layer, not a general writing agent. Skills explain how an agent should prepare and review work; schemas, validation, and renderers enforce the document contract.
 
+Capabilities are executable code owned by the organization repository and run with the current user's operating-system permissions. Manifest permission declarations describe intended access; they are not an operating-system sandbox. The runner constrains time, captured output, concurrency, and accepted artifact paths, so organizations should only enable capability code they trust.
+
 ## Profile format v1
 
 `organization.yaml` and every brand, operation, and document-type profile declare `schema_version: 1`. Brand and document-type profiles also declare a version string for artifact provenance. The organization manifest lists profile files using paths relative to the organization repository; an operation selects its brand with `brand_id`, and each document type declares a renderer capability ID. The version 1 schemas are packaged with the CLI, so validation works offline and against the exact schema release used by the runtime.

@@ -17,32 +17,35 @@ func Run(args []string, _ io.Reader, stdout, stderr io.Writer) int {
 		return ExitUsage
 	}
 
-	for _, arg := range commandArgs {
-		switch arg {
-		case "--help", "-h", "help":
-			_, _ = io.WriteString(stdout, helpText)
-			return ExitSuccess
-		case "--version", "version":
-			writeVersion(stdout, format, Version)
-			return ExitSuccess
-		default:
-			writeError(stderr, format, "usage_error", fmt.Sprintf("unknown command %q", arg))
-			return ExitUsage
-		}
+	if len(commandArgs) == 0 {
+		_, _ = io.WriteString(stdout, helpText)
+		return ExitSuccess
 	}
-
-	_, _ = io.WriteString(stdout, helpText)
-	return ExitSuccess
+	switch commandArgs[0] {
+	case "--help", "-h", "help":
+		_, _ = io.WriteString(stdout, helpText)
+		return ExitSuccess
+	case "--version", "version":
+		writeVersion(stdout, format, Version)
+		return ExitSuccess
+	case "capabilities":
+		return runCapabilities(commandArgs[1:], format, stdout, stderr)
+	default:
+		writeError(stderr, format, "usage_error", fmt.Sprintf("unknown command %q", commandArgs[0]))
+		return ExitUsage
+	}
 }
 
 const helpText = `OrgDoc Runtime applies organization document rules and brand profiles.
 
-Usage: orgdoc [--format human|json] [--help|--version]
+Usage: orgdoc [--format human|json] [--help|--version|capabilities]
 
 Options:
   --format FORMAT  Select human or JSON output for diagnostics.
   -h, --help       Show this help.
   --version        Show the CLI version.
+  capabilities list [--organization PATH]       List validated capabilities.
+  capabilities describe ID [--organization PATH] Show one capability manifest.
 
 Exit codes: 0 success, 1 runtime error, 2 usage error.
 `

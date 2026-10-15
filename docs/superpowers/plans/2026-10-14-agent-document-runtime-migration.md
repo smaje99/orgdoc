@@ -189,12 +189,12 @@ Human-readable output is for direct users. Every command used by agents supports
 - Produces: `Discover(root string) ([]Capability, error)`, `Describe(root, id string) (Capability, error)`, `Run(ctx context.Context, capability Capability, request WorkerRequest) (WorkerResult, error)`.
 - Worker protocol: request/result envelope has `protocol_version`, `job_id`, `operation_id`, `brand_id`, `document_type`, `input`, and `artifact_dir`; result has `status`, `outputs`, and structured diagnostics.
 
-- [ ] Add fixture workers for success, malformed JSON, timeout, nonzero exit, oversized output, and path traversal attempts.
-- [ ] Implement registry discovery and JSON capability listing/description.
-- [ ] Implement direct executable invocation with stdin/stdout JSON, stderr capture, context cancellation, timeout, and no shell evaluation.
-- [ ] Restrict returned artifact paths to the job directory; reject absolute paths and parent traversal.
-- [ ] Add concurrency semaphore keyed by resource class and configured worker limit.
-- [ ] Verify a failed worker cannot overwrite or delete prior artifact directories.
+- [x] Add fixture workers for success, malformed JSON, timeout, nonzero exit, oversized output, and path traversal attempts.
+- [x] Implement registry discovery and JSON capability listing/description.
+- [x] Implement direct executable invocation with stdin/stdout JSON, stderr capture, context cancellation, timeout, and no shell evaluation.
+- [x] Restrict returned artifact paths to the job directory; reject absolute paths and parent traversal.
+- [x] Add concurrency semaphore keyed by resource class and configured worker limit.
+- [x] Verify a failed worker cannot overwrite or delete prior artifact directories.
 
 **Acceptance:** An agent can discover/describe capabilities as JSON, and the runner enforces protocol, cancellation, output location, and configured concurrency limits.
 
