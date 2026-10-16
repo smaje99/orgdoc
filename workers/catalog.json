@@ -2,6 +2,16 @@
   "schema_version": 1,
   "workers": [
     {
+      "id": "presentation",
+      "project_path": "workers/python/presentation",
+      "capabilities": ["presentation-pptx"],
+      "entrypoints": ["orgdoc-render-presentation"],
+      "minimum_python": "3.10",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": ["LibreOffice (optional, for requested PDF preview)"],
+      "include_compat_runtime": false
+    },
+    {
       "id": "spreadsheet",
       "project_path": "workers/python/spreadsheet",
       "capabilities": ["spreadsheet-xlsx"],

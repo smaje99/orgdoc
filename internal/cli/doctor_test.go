@@ -32,18 +32,21 @@ func TestDoctorReportsMissingOrganization(t *testing.T) {
 	}
 }
 
-func TestDoctorDiscoversSpreadsheetWorkerFromExampleOrganization(t *testing.T) {
+func TestDoctorDiscoversDocumentWorkersFromExampleOrganization(t *testing.T) {
 	root := filepath.Join("..", "..", "examples", "organization-docs")
 	checks, _, _, stderr := runDoctorJSON(t, root)
 	if stderr != "" {
 		t.Fatalf("doctor stderr = %q", stderr)
 	}
+	found := map[string]bool{}
 	for _, check := range checks {
-		if check.ID == "capability:spreadsheet-xlsx:entrypoint" {
-			return
+		if check.ID == "capability:spreadsheet-xlsx:entrypoint" || check.ID == "capability:presentation-pptx:entrypoint" {
+			found[check.ID] = true
 		}
 	}
-	t.Fatalf("doctor omitted the spreadsheet worker entrypoint check: %#v", checks)
+	if !found["capability:spreadsheet-xlsx:entrypoint"] || !found["capability:presentation-pptx:entrypoint"] {
+		t.Fatalf("doctor omitted a document worker entrypoint check: %#v", checks)
+	}
 }
 
 func TestDoctorWarnsWhenNoCapabilitiesAreDeclared(t *testing.T) {

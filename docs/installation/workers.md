@@ -7,6 +7,7 @@ Install Python 3 and `uv` before installing a Python worker. The current worker 
 | Capability | Worker project | Extra prerequisites |
 | --- | --- | --- |
 | `spreadsheet-xlsx` | `spreadsheet` | None for `.xlsx`; LibreOffice is optional for formula recalculation or PDF previews |
+| `presentation-pptx` | `presentation` | None for `.pptx`; LibreOffice is optional for PDF previews |
 | `invoice-pdf` | `reportlab-invoice` | None beyond Python and uv |
 | `report-markdown` | `narrative-report` | None beyond Python and uv |
 | `media-scan` | `media-transcription` | None; scanning only inspects paths and media extensions |
@@ -30,4 +31,6 @@ The runner filters inherited environment variables, preserves the configured `ME
 
 Copy the `spreadsheet-xlsx` capability and the `spreadsheet` document type from the sample organization repository when enabling workbook generation. For spreadsheet inputs, choose `formula_policy: spreadsheet_app` to leave formulas for recalculation by the spreadsheet application, or `formula_policy: libreoffice` to request local recalculation. `validation.render_pdf: true` requests an additional PDF preview. Both LibreOffice options fail with a clear worker diagnostic if LibreOffice is unavailable. Worksheet protection prevents accidental edits; it does not provide confidentiality or tamper resistance.
 
-Presentation and PDF form workers are planned capabilities and do not have release bundles yet.
+Copy the `presentation-pptx` capability and `presentation` document type when enabling slide generation. The worker supports editable text, native tables and charts, and PNG/JPEG assets within the organization repository. LibreOffice is only needed when requesting a PDF preview with `validation.render_pdf: true`.
+
+PDF form generation and completion remain planned capabilities. The presentation worker will be available in the worker bundles published with the next release; existing releases do not contain it.

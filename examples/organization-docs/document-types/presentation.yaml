@@ -1,0 +1,14 @@
+schema_version: 1
+id: presentation
+name: Presentación corporativa
+version: 1.0.0
+request_schema: schemas/presentation-request.schema.json
+required_fields:
+  - title
+  - slides
+protected_fields:
+  - slides[].blocks[].text
+  - slides[].blocks[].paragraphs[]
+  - slides[].blocks[].rows[][]
+  - slides[].blocks[].series[].values[]
+renderer_capability: presentation-pptx

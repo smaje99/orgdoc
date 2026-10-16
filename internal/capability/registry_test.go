@@ -68,6 +68,7 @@ func TestExampleOrganizationDiscoversOptionalMediaCapabilities(t *testing.T) {
 	}
 	want := map[string]ResourceClass{
 		"spreadsheet-xlsx":    ResourceClassMemory,
+		"presentation-pptx":   ResourceClassMemory,
 		"media-scan":          ResourceClassCPU,
 		"media-transcription": ResourceClassMemory,
 		"media-report":        ResourceClassMemory,

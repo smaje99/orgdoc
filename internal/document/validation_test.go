@@ -37,6 +37,26 @@ func TestValidateBrandedSpreadsheetExampleAgainstDocumentSchema(t *testing.T) {
 	}
 }
 
+func TestValidateBrandedPresentationExampleAgainstDocumentSchema(t *testing.T) {
+	organizationRoot := filepath.Join("..", "..", "examples", "organization-docs")
+	profile, err := orgconfig.ResolveProfile(organizationRoot, "consulting", "presentation")
+	if err != nil {
+		t.Fatal(err)
+	}
+	content, err := os.ReadFile(filepath.Join("..", "..", "workers", "python", "presentation", "examples", "quarterly-review.json"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	var request map[string]any
+	if err := json.Unmarshal(content, &request); err != nil {
+		t.Fatal(err)
+	}
+	input := request["input"].(map[string]any)["document"].(map[string]any)
+	if err := ValidateDocumentInput(profile, input); err != nil {
+		t.Fatalf("valid presentation example error = %v", err)
+	}
+}
+
 func TestValidateDocumentInputUsesSelectedRequestSchema(t *testing.T) {
 	profile := goldenProfile(t, "henko", "#173F5F")
 	schemaPath := filepath.Join(profile.Organization.Root, "schemas", "invoice.json")

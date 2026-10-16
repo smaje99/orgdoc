@@ -201,18 +201,18 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Create: `workers/python/presentation/`
 - Create: `examples/organization-docs/capabilities/presentation-pptx/`
 - Create: presentation schemas and document-type profile
-- Modify: example organization and tests
+- Modify: example organization, worker catalog, packaging checks, documentation, and Go profile/doctor tests
 
 **Interfaces:**
 - Capability ID: `presentation-pptx`.
 - Initial output: editable `.pptx` from structured slides and a brand profile, with explicit supported layout types and media inputs.
 
-- [ ] Define typed slide blocks for title, section, text, image, table, and chart; reject unsupported block types before starting the renderer.
-- [ ] Implement presentation generation using python-pptx or another justified library, with theme colors, logo, typography fallbacks, and slide master/layout rules.
-- [ ] Add tests for slide ordering, protected text/data, image paths confined to supplied assets, and profile isolation across both brands.
-- [ ] Add optional LibreOffice PDF/image rendering for visual QA and report when rendering is unavailable.
-- [ ] Package/install the worker through Task 2 and include it in doctor checks.
-- [ ] Run worker tests and inspect rendered slides; commit as `✨ feat(documents): render branded presentations`.
+- [x] Define typed slide blocks for title, section, text, image, table, and chart; reject unsupported block types before starting the renderer.
+- [x] Implement presentation generation using python-pptx or another justified library, with theme colors, logo, typography fallbacks, and slide master/layout rules.
+- [x] Add tests for slide ordering, protected text/data, image paths confined to supplied assets, and profile isolation across both brands.
+- [x] Add optional LibreOffice PDF/image rendering for visual QA and report when rendering is unavailable.
+- [x] Package/install the worker through Task 2 and include it in doctor checks.
+- [x] Run worker tests and inspect rendered slides; commit as `✨ feat(documents): render branded presentations`.
 
 ### Task 8: Add PDF form generation and completion capabilities
 

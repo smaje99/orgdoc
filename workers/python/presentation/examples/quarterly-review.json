@@ -1,0 +1,33 @@
+{
+  "protocol_version": 1,
+  "job_id": "quarterly-review-example",
+  "operation_id": "consulting",
+  "brand_id": "henko",
+  "document_type": "presentation",
+  "artifact_dir": "./artifacts",
+  "input": {
+    "organization_root": "./examples/organization-docs",
+    "document": {
+      "title": "Quarterly business review",
+      "slides": [
+        {"layout": "title", "blocks": [{"type": "title", "text": "Quarterly business review", "subtitle": "Consulting operation · Q3 2026"}]},
+        {"layout": "section", "blocks": [{"type": "section", "text": "Performance", "subtitle": "Results and priorities"}]},
+        {"layout": "two_column", "blocks": [
+          {"type": "title", "text": "Revenue overview"},
+          {"type": "text", "heading": "Executive summary", "paragraphs": ["Revenue grew through the quarter.", "Renewals remain the primary focus for Q4."]},
+          {"type": "chart", "chart_type": "bar", "title": "Quarterly revenue (COP M)", "categories": ["Q1", "Q2", "Q3"], "series": [{"name": "Revenue", "values": [82, 91, 108]}]}
+        ]},
+        {"layout": "content", "blocks": [
+          {"type": "title", "text": "Priority accounts"},
+          {"type": "table", "columns": ["Account", "Status", "Next action"], "rows": [["Acme", "On track", "Renewal review"], ["Northstar", "Watch", "Executive meeting"]]}
+        ]}
+      ]
+    },
+    "context": {
+      "organization": {"name": "Henko Technologies"},
+      "operation": {"name": "Consulting"},
+      "brand": {"id": "henko", "name": "Henko Technologies", "version": "1.0.0", "assets": [], "visual": {"colors": {"primary": "#173F5F", "secondary": "#20639B", "accent": "#F6D55C", "text": "#17212B"}, "typography": {"heading": "Aptos Display", "body": "Aptos"}}},
+      "document_type": {"id": "presentation", "version": "1.0.0", "protected_fields": ["slides[].blocks[].text"]}
+    }
+  }
+}
