@@ -8,6 +8,7 @@ Install Python 3 and `uv` before installing a Python worker. The current worker 
 | --- | --- | --- |
 | `spreadsheet-xlsx` | `spreadsheet` | None for `.xlsx`; LibreOffice is optional for formula recalculation or PDF previews |
 | `presentation-pptx` | `presentation` | None for `.pptx`; LibreOffice is optional for PDF previews |
+| `pdf-form-generate`, `pdf-form-fill` | `pdf-form` | None beyond Python and uv |
 | `invoice-pdf` | `reportlab-invoice` | None beyond Python and uv |
 | `report-markdown` | `narrative-report` | None beyond Python and uv |
 | `media-scan` | `media-transcription` | None; scanning only inspects paths and media extensions |
@@ -33,4 +34,4 @@ Copy the `spreadsheet-xlsx` capability and the `spreadsheet` document type from 
 
 Copy the `presentation-pptx` capability and `presentation` document type when enabling slide generation. The worker supports editable text, native tables and charts, and PNG/JPEG assets within the organization repository. LibreOffice is only needed when requesting a PDF preview with `validation.render_pdf: true`.
 
-PDF form generation and completion remain planned capabilities. The presentation worker will be available in the worker bundles published with the next release; existing releases do not contain it.
+The PDF form capabilities create interactive AcroForms and fill organization-scoped templates. They preserve the template and keep output interactive by default; flattening requires an explicit request. See the worker guide for field types, supported input PDFs, and legal/accessibility boundaries. The presentation and PDF form workers will be available in worker bundles published with the next release; existing releases do not contain them.

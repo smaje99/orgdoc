@@ -13,6 +13,8 @@ document_types:
   - document-types/invoice.yaml
   - document-types/spreadsheet.yaml
   - document-types/presentation.yaml
+  - document-types/pdf-form.yaml
+  - document-types/pdf-form-fill.yaml
   - document-types/report.yaml
   - document-types/media-scan.yaml
   - document-types/media-transcription.yaml

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "PDF form completion request",
+  "type": "object",
+  "required": ["template_path", "field_values"],
+  "properties": {
+    "template_path": {"type": "string", "minLength": 1},
+    "field_values": {"type": "object", "additionalProperties": {"type": ["string", "boolean"]}},
+    "flatten": {"type": "boolean", "default": false}
+  },
+  "additionalProperties": false
+}

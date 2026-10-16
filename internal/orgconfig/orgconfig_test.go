@@ -53,6 +53,14 @@ func TestCommittedExampleOrganizationResolvesBothBrands(t *testing.T) {
 	if err != nil || presentation.DocumentType.RendererCapability != "presentation-pptx" || presentation.Brand.ID != "henko" {
 		t.Fatalf("presentation profile = (%#v, %v)", presentation, err)
 	}
+	generatedForm, err := ResolveProfile(root, "consulting", "pdf-form")
+	if err != nil || generatedForm.DocumentType.RendererCapability != "pdf-form-generate" || generatedForm.Brand.ID != "henko" {
+		t.Fatalf("PDF form generation profile = (%#v, %v)", generatedForm, err)
+	}
+	filledForm, err := ResolveProfile(root, "consulting", "pdf-form-fill")
+	if err != nil || filledForm.DocumentType.RendererCapability != "pdf-form-fill" || filledForm.Brand.ID != "henko" {
+		t.Fatalf("PDF form fill profile = (%#v, %v)", filledForm, err)
+	}
 	for _, documentType := range []string{"media-scan", "media-transcription", "media-report", "media-pdf"} {
 		media, err := ResolveProfile(root, "media", documentType)
 		if err != nil || media.DocumentType.RendererCapability != documentType {

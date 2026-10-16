@@ -40,11 +40,17 @@ func TestDoctorDiscoversDocumentWorkersFromExampleOrganization(t *testing.T) {
 	}
 	found := map[string]bool{}
 	for _, check := range checks {
-		if check.ID == "capability:spreadsheet-xlsx:entrypoint" || check.ID == "capability:presentation-pptx:entrypoint" {
+		if check.ID == "capability:spreadsheet-xlsx:entrypoint" ||
+			check.ID == "capability:presentation-pptx:entrypoint" ||
+			check.ID == "capability:pdf-form-generate:entrypoint" ||
+			check.ID == "capability:pdf-form-fill:entrypoint" {
 			found[check.ID] = true
 		}
 	}
-	if !found["capability:spreadsheet-xlsx:entrypoint"] || !found["capability:presentation-pptx:entrypoint"] {
+	if !found["capability:spreadsheet-xlsx:entrypoint"] ||
+		!found["capability:presentation-pptx:entrypoint"] ||
+		!found["capability:pdf-form-generate:entrypoint"] ||
+		!found["capability:pdf-form-fill:entrypoint"] {
 		t.Fatalf("doctor omitted a document worker entrypoint check: %#v", checks)
 	}
 }

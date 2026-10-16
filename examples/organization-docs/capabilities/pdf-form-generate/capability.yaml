@@ -1,0 +1,17 @@
+schema_version: 1
+id: pdf-form-generate
+version: 1.0.0
+description: Generate a branded, interactive AcroForm PDF from typed fields.
+input_schema: input.schema.json
+output_schema: output.schema.json
+runtime: python
+entrypoint:
+  - orgdoc-generate-pdf-form
+resource_class: memory
+platforms:
+  - linux
+  - darwin
+permissions:
+  - filesystem:write_artifact_dir
+timeout_seconds: 120
+max_output_bytes: 10485760

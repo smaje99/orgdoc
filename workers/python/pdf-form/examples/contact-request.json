@@ -1,0 +1,27 @@
+{
+  "protocol_version": 1,
+  "job_id": "contact-request-example",
+  "operation_id": "consulting",
+  "brand_id": "henko",
+  "document_type": "pdf-form",
+  "artifact_dir": "./artifacts",
+  "input": {
+    "organization_root": "./examples/organization-docs",
+    "document": {
+      "title": "Contact request",
+      "page_size": "A4",
+      "fields": [
+        {"name": "full_name", "type": "text", "label": "Full name", "x": 48, "y": 72, "width": 260, "height": 28, "required": true},
+        {"name": "consent", "type": "checkbox", "label": "I agree to the privacy notice", "x": 48, "y": 122, "size": 16, "required": true},
+        {"name": "contact_method", "type": "radio", "label": "Preferred contact", "x": 48, "y": 170, "size": 16, "gap": 110, "options": [{"value": "email", "label": "Email"}, {"value": "phone", "label": "Phone"}]},
+        {"name": "country", "type": "choice", "label": "Country", "x": 48, "y": 230, "width": 220, "height": 28, "options": ["CO", "MX", "US"]}
+      ]
+    },
+    "context": {
+      "organization": {"name": "Henko Technologies"},
+      "operation": {"name": "Consulting"},
+      "brand": {"id": "henko", "name": "Henko Technologies", "version": "1.0.0", "assets": [], "visual": {"colors": {"primary": "#173F5F", "secondary": "#20639B", "accent": "#F6D55C", "text": "#17212B"}}},
+      "document_type": {"id": "pdf-form", "version": "1.0.0"}
+    }
+  }
+}

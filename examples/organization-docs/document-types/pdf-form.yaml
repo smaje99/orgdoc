@@ -1,0 +1,14 @@
+schema_version: 1
+id: pdf-form
+name: Formulario PDF rellenable
+version: 1.0.0
+request_schema: schemas/pdf-form-request.schema.json
+required_fields:
+  - title
+  - fields
+protected_fields:
+  - fields[].name
+  - fields[].type
+  - fields[].value
+  - fields[].options[]
+renderer_capability: pdf-form-generate

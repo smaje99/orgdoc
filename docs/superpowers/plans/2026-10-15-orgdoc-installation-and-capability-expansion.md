@@ -226,12 +226,12 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Separate capability IDs for generating fillable PDF forms and filling a supplied AcroForm template; do not silently flatten a form or change a source template.
 - Return the generated PDF and a field/result summary; preserve source template and previous successful artifacts.
 
-- [ ] Add fixture forms with text, checkbox, radio, and choice fields and document supported field types.
-- [ ] Implement generation/fill using ReportLab and pypdf (or an equivalent chosen stack); validate field names and value types before rendering.
-- [ ] Test field values, appearance streams, metadata, source preservation, unknown fields, malformed PDFs, and output path isolation.
-- [ ] Document that signing, PDF/UA accessibility certification, legal validity, and tax submission are outside the capability unless later specified.
-- [ ] Package/install through Task 2 and include system prerequisites in doctor checks.
-- [ ] Run tests and inspect PDFs in an independent reader/render; commit as `✨ feat(documents): support fillable PDF forms`.
+- [x] Add fixture forms with text, checkbox, radio, and choice fields and document supported field types.
+- [x] Implement generation/fill using ReportLab and pypdf (or an equivalent chosen stack); validate field names and value types before rendering.
+- [x] Test field values, appearance streams, metadata, source preservation, unknown fields, malformed PDFs, and output path isolation.
+- [x] Document that signing, PDF/UA accessibility certification, legal validity, and tax submission are outside the capability unless later specified.
+- [x] Package/install through Task 2 and include system prerequisites in doctor checks.
+- [x] Run tests and inspect PDFs in an independent reader/render; commit as `✨ feat(documents): support fillable PDF forms`.
 
 ### Task 9: Integrate all release packagers and publish-ready checks
 

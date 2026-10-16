@@ -67,6 +67,8 @@ func TestExampleOrganizationDiscoversOptionalMediaCapabilities(t *testing.T) {
 		t.Fatalf("Discover(example organization) error = %v", err)
 	}
 	want := map[string]ResourceClass{
+		"pdf-form-generate":   ResourceClassMemory,
+		"pdf-form-fill":       ResourceClassMemory,
 		"spreadsheet-xlsx":    ResourceClassMemory,
 		"presentation-pptx":   ResourceClassMemory,
 		"media-scan":          ResourceClassCPU,

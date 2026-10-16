@@ -57,6 +57,37 @@ func TestValidateBrandedPresentationExampleAgainstDocumentSchema(t *testing.T) {
 	}
 }
 
+func TestValidateBrandedPDFFormExamplesAgainstDocumentSchemas(t *testing.T) {
+	organizationRoot := filepath.Join("..", "..", "examples", "organization-docs")
+	for documentType, examplePath := range map[string]string{
+		"pdf-form":      filepath.Join("..", "..", "workers", "python", "pdf-form", "examples", "contact-request.json"),
+		"pdf-form-fill": filepath.Join("..", "..", "workers", "python", "pdf-form", "examples", "fill-contact-request.json"),
+	} {
+		profile, err := orgconfig.ResolveProfile(organizationRoot, "consulting", documentType)
+		if err != nil {
+			t.Fatalf("ResolveProfile(%q): %v", documentType, err)
+		}
+		content, err := os.ReadFile(examplePath)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var request map[string]any
+		if err := json.Unmarshal(content, &request); err != nil {
+			t.Fatal(err)
+		}
+		input := request["input"].(map[string]any)
+		var documentInput map[string]any
+		if documentType == "pdf-form" {
+			documentInput = input["document"].(map[string]any)
+		} else {
+			documentInput = input["document"].(map[string]any)
+		}
+		if err := ValidateDocumentInput(profile, documentInput); err != nil {
+			t.Fatalf("valid %s example error = %v", documentType, err)
+		}
+	}
+}
+
 func TestValidateDocumentInputUsesSelectedRequestSchema(t *testing.T) {
 	profile := goldenProfile(t, "henko", "#173F5F")
 	schemaPath := filepath.Join(profile.Organization.Root, "schemas", "invoice.json")

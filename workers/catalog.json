@@ -2,6 +2,16 @@
   "schema_version": 1,
   "workers": [
     {
+      "id": "pdf-form",
+      "project_path": "workers/python/pdf-form",
+      "capabilities": ["pdf-form-generate", "pdf-form-fill"],
+      "entrypoints": ["orgdoc-generate-pdf-form", "orgdoc-fill-pdf-form"],
+      "minimum_python": "3.10",
+      "minimum_uv": "0.11.8",
+      "system_prerequisites": [],
+      "include_compat_runtime": false
+    },
+    {
       "id": "presentation",
       "project_path": "workers/python/presentation",
       "capabilities": ["presentation-pptx"],

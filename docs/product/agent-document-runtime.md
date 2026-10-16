@@ -6,12 +6,15 @@ The supported document set includes:
 
 - **Branded spreadsheet**, with typed cells, formulas, tables, and charts rendered to an editable XLSX workbook.
 - **Branded presentation**, with structured text, tables, images, and native charts rendered to an editable PowerPoint deck.
+- **Fillable PDF forms**, with typed AcroForm fields, template filling, and optional explicitly requested flattening.
 - **Invoice PDF**, with typed financial fields rendered by a ReportLab worker.
 - **Narrative report**, with brand voice applied to prose and rendered as Markdown.
 
 Spreadsheet requests select a formula policy: deliver formulas for recalculation by a spreadsheet application, or explicitly request LibreOffice recalculation. The worker never claims calculated results in the first mode; an organization can restrict the allowed policy in its document request schema.
 
 Presentation requests use explicit title, section, content, or two-column layouts and support text, raster images, tables, and native bar, line, and pie charts. Image paths are restricted to assets inside the organization repository. LibreOffice can optionally render a PDF preview for visual review. Font families are resolved by the machine opening or rendering the deck, so brands should select widely available fonts or install their chosen font on the render host.
+
+PDF forms use two separate capabilities: generate an interactive form from typed text, checkbox, radio, and choice fields; or fill an existing AcroForm PDF whose path is confined to the organization repository. Filling preserves the source and remains interactive by default. A static flattened output is created only when the request explicitly sets `flatten: true`. XFA forms, signing, PDF/UA accessibility certification, legal validity, and fiscal submission are outside the current scope.
 
 An organization can define multiple brands and operations. Each operation names its brand, so the runtime never guesses when an operation or brand is ambiguous. Visual tokens, document business rules, and writing guidance remain separate versioned inputs. Humanizer is an optional agent skill for requested narrative edits; it cannot modify amounts, identifiers, dates, quotations, citations, or other typed fields. See the [Humanizer policy](humanizer-policy.md) for its field boundary and voice rules.
 

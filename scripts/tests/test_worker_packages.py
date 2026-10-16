@@ -14,6 +14,7 @@ CATALOG_PATH = ROOT / "workers" / "catalog.json"
 PACKAGER_PATH = ROOT / "scripts" / "package-workers.py"
 INSTALLER_PATH = ROOT / "scripts" / "install-worker.sh"
 EXPECTED_WORKERS = {
+  "pdf-form": {"pdf-form-generate", "pdf-form-fill"},
   "presentation": {"presentation-pptx"},
   "spreadsheet": {"spreadsheet-xlsx"},
   "reportlab-invoice": {"invoice-pdf"},
@@ -22,6 +23,7 @@ EXPECTED_WORKERS = {
   "media-transcription": {"media-scan", "media-transcription"},
 }
 EXPECTED_COMPAT_RUNTIME = {
+  "pdf-form": False,
   "presentation": False,
   "spreadsheet": False,
   "reportlab-invoice": False,
@@ -96,6 +98,7 @@ class WorkerCatalogTests(unittest.TestCase):
       self.assertEqual(result.returncode, 0, result.stderr)
 
       worker_ids = {
+        "pdf-form",
         "presentation",
         "spreadsheet",
         "reportlab-invoice",
@@ -163,6 +166,23 @@ class WorkerCatalogTests(unittest.TestCase):
         metadata = json.load(archive.extractfile("worker-bundle.json"))
         self.assertEqual(metadata["worker_id"], "presentation")
         self.assertEqual(metadata["capabilities"], ["presentation-pptx"])
+
+      form_bundle = output_dir / f"orgdoc-worker-pdf-form-{version}-source.tar.gz"
+      with tarfile.open(form_bundle, "r:gz") as archive:
+        members = set(archive.getnames())
+        self.assertIn("workers/python/pdf-form/pyproject.toml", members)
+        self.assertIn("workers/python/pdf-form/uv.lock", members)
+        self.assertIn("workers/python/pdf-form/src/orgdoc_pdf_form/worker.py", members)
+        self.assertIn("workers/python/pdf-form/examples/contact-request.json", members)
+        self.assertIn(
+          "examples/organization-docs/capabilities/pdf-form-generate/capability.yaml", members
+        )
+        self.assertIn(
+          "examples/organization-docs/capabilities/pdf-form-fill/capability.yaml", members
+        )
+        metadata = json.load(archive.extractfile("worker-bundle.json"))
+        self.assertEqual(metadata["worker_id"], "pdf-form")
+        self.assertEqual(metadata["capabilities"], ["pdf-form-generate", "pdf-form-fill"])
 
   def test_worker_installer_verifies_bundle_and_installs_one_isolated_project(self):
     version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
