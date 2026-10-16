@@ -33,4 +33,4 @@ On Linux and macOS, OrgDoc starts each worker in its own process group and kills
 
 ## Future isolation
 
-Any third-party worker distribution requires a separate design for publisher identity, signatures, immutable versions, compatibility, dependency provenance, uninstall and rollback, permission review, network policy, and OS-enforced isolation. Possible OS controls include Linux namespaces/seccomp or a container runtime and macOS sandbox profiles. They are future work; OrgDoc does not claim those boundaries today.
+Third-party worker distribution remains deferred until adoption triggers justify it. Before that work begins, it needs a separate design for publisher identity, signatures, immutable versions, compatibility, dependency provenance, uninstall and rollback, permission review, network policy, and OS-enforced isolation. Possible OS controls include Linux namespaces/seccomp or a container runtime and macOS sandbox profiles. They are future work; OrgDoc does not claim those boundaries today. See the [third-party capability gate](../architecture/third-party-capabilities.md) for the adoption criteria and requirements.

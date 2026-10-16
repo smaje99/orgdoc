@@ -257,11 +257,11 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - Modify: `docs/context/roadmap.md`
 - Create: `docs/architecture/third-party-capabilities.md`
 
-- [ ] State that current extension means adding a trusted local capability manifest and worker; no marketplace or remote code discovery exists.
-- [ ] Define adoption triggers for revisiting third-party distribution, such as external organizations requesting worker sharing or independently maintained workers.
-- [ ] Record future requirements: publisher identity, signatures, immutable versions, compatibility policy, dependency provenance, uninstall/rollback, permission review, network policy, and OS-enforced isolation.
-- [ ] Keep electronic invoicing and fiscal-service integrations explicitly out of scope.
-- [ ] Review links and product claims against actual CLI behavior; commit as `📝 docs(product): define adoption-gated extensions`.
+- [x] State that current extension means adding a trusted local capability manifest and worker; no marketplace or remote code discovery exists.
+- [x] Define adoption triggers for revisiting third-party distribution, such as external organizations requesting worker sharing or independently maintained workers.
+- [x] Record future requirements: publisher identity, signatures, immutable versions, compatibility policy, dependency provenance, uninstall/rollback, permission review, network policy, and OS-enforced isolation.
+- [x] Keep electronic invoicing and fiscal-service integrations explicitly out of scope.
+- [x] Review links and product claims against actual CLI behavior; commit as `📝 docs(product): define adoption-gated extensions`.
 
 ## Completion Criteria
 
