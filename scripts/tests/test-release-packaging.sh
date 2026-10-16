@@ -6,6 +6,14 @@ TEST_DIR=$(mktemp -d)
 trap 'rm -rf "$TEST_DIR"' EXIT HUP INT TERM
 VERSION=9.8.7
 OUTPUT_DIR="$TEST_DIR/release"
+MISMATCH_VERSION="$(cat "$ROOT/VERSION")-mismatch"
+
+"$ROOT/scripts/check-release-version.sh" "v$(cat "$ROOT/VERSION")"
+if "$ROOT/scripts/check-release-version.sh" "v$MISMATCH_VERSION" >"$TEST_DIR/version-mismatch.log" 2>&1; then
+  echo "release version checker unexpectedly accepted a tag mismatch" >&2
+  exit 1
+fi
+grep -F "does not match VERSION" "$TEST_DIR/version-mismatch.log" >/dev/null
 
 if ! grep -Fq 'REPOSITORY=${ORGDOC_REPOSITORY:-smaje99/orgdoc}' "$ROOT/scripts/install-orgdoc.sh"; then
   echo "installer must default to smaje99/orgdoc" >&2
@@ -13,6 +21,8 @@ if ! grep -Fq 'REPOSITORY=${ORGDOC_REPOSITORY:-smaje99/orgdoc}' "$ROOT/scripts/i
 fi
 
 OUTPUT_DIR="$OUTPUT_DIR" "$ROOT/scripts/build-release.sh" "$VERSION"
+OUTPUT_DIR="$OUTPUT_DIR" python3 "$ROOT/scripts/package-workers.py" "$VERSION"
+python3 "$ROOT/scripts/verify-release-assets.py" "$VERSION" "$OUTPUT_DIR"
 
 for TARGET in linux-amd64 linux-arm64 darwin-amd64 darwin-arm64; do
   ASSET="orgdoc-${VERSION}-${TARGET}.tar.gz"
@@ -34,7 +44,9 @@ for TARGET in linux-amd64 linux-arm64 darwin-amd64 darwin-arm64; do
 done
 
 COUNT=$(wc -l < "$OUTPUT_DIR/SHA256SUMS" | tr -d ' ')
-test "$COUNT" -eq 4
+WORKER_COUNT=$(python3 -c 'import json,sys; print(len(json.load(open(sys.argv[1]))["workers"]))' \
+  "$ROOT/workers/catalog.json")
+test "$COUNT" -eq "$((4 + WORKER_COUNT))"
 (
   cd "$OUTPUT_DIR"
   if command -v sha256sum >/dev/null 2>&1; then

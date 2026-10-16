@@ -244,11 +244,11 @@ No automatic third-party plugin support is part of the implementation tasks. A f
 - A version tag matching `VERSION` produces core archives, worker source bundles, one combined checksum list, and release notes suitable for GitHub Releases.
 - CI uploads those assets only after Go, Python, package, worker-install, and clean-environment smoke checks pass.
 
-- [ ] Test tag/version mismatch failure and asset naming for all official OS/architecture targets.
-- [ ] Build and install a release candidate in a clean temporary environment with no repository checkout; test the core CLI and each selected worker bundle independently.
-- [ ] Verify the checksum manifest covers every uploaded archive and no unbundled model/secret/cache files are present.
-- [ ] Document manual release creation/tagging, asset review, checksum verification, install, update, and rollback.
-- [ ] Run the full release candidate checks and commit as `🚀 chore(release): publish core and worker assets`.
+- [x] Test tag/version mismatch failure and asset naming for all official OS/architecture targets.
+- [x] Build and install a release candidate in a clean temporary environment with no repository checkout; test the core CLI and each selected worker bundle independently.
+- [x] Verify the checksum manifest covers every uploaded archive and no unbundled model/secret/cache files are present.
+- [x] Document manual release creation/tagging, asset review, checksum verification, install, update, and rollback.
+- [x] Run the full release candidate checks and commit as `🚀 chore(release): publish core and worker assets`.
 
 ### Task 10: Record adoption-gated extension and security roadmap
 

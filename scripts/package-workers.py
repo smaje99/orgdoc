@@ -24,6 +24,20 @@ IGNORE_PATTERNS = (
   ".pytest_cache",
   ".mypy_cache",
   ".ruff_cache",
+  ".cache",
+  ".model-cache",
+  "model-cache",
+  "models",
+  ".env",
+  ".env.*",
+  "*.env",
+  "credentials.json",
+  "secrets",
+  ".secrets",
+  "*.pem",
+  "*.key",
+  "*.p12",
+  "*.pfx",
   "*.pyc",
   "*.pyo",
   "dist",
@@ -107,6 +121,7 @@ def _stage_worker(worker: dict[str, Any], repo_root: Path, bundle_root: Path, ve
   if worker["include_compat_runtime"]:
     shutil.copy2(repo_root / "pyproject.toml", bundle_root / "pyproject.toml")
     shutil.copy2(repo_root / "README.md", bundle_root / "README.md")
+    _copy_tree(repo_root / "docs" / "migration", bundle_root / "docs" / "migration")
     _copy_tree(repo_root / "src" / "media_report", bundle_root / "src" / "media_report")
 
   metadata = {

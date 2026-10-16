@@ -22,7 +22,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Verify tag matches VERSION
-        run: test "${GITHUB_REF_NAME#v}" = "$(cat VERSION)"
+        run: scripts/check-release-version.sh "$GITHUB_REF_NAME"
       - name: Verify Go runtime
         run: |
           test -z "$(gofmt -l cmd internal)"
@@ -40,10 +40,15 @@ jobs:
         run: scripts/build-release.sh "${GITHUB_REF_NAME#v}"
       - name: Package optional worker bundles
         run: python scripts/package-workers.py "${GITHUB_REF_NAME#v}"
+      - name: Verify complete release asset set
+        run: python scripts/verify-release-assets.py "${GITHUB_REF_NAME#v}"
       - name: Verify worker package tests
         run: python -m unittest scripts.tests.test_worker_packages -v
       - name: Smoke test Linux release package
         run: scripts/smoke-release.sh "build/release/orgdoc-$(cat VERSION)-linux-amd64.tar.gz"
+      - name: Install and smoke every worker bundle
+        run: scripts/smoke-worker-bundles.sh "${GITHUB_REF_NAME#v}"
       - uses: softprops/action-gh-release@v2
         with:
           files: build/release/*
+          generate_release_notes: true

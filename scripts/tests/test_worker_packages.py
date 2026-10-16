@@ -1,4 +1,5 @@
 import hashlib
+import importlib.util
 import json
 import os
 import subprocess
@@ -13,6 +14,8 @@ ROOT = Path(__file__).resolve().parents[2]
 CATALOG_PATH = ROOT / "workers" / "catalog.json"
 PACKAGER_PATH = ROOT / "scripts" / "package-workers.py"
 INSTALLER_PATH = ROOT / "scripts" / "install-worker.sh"
+SMOKE_WORKERS_PATH = ROOT / "scripts" / "smoke-worker-bundles.sh"
+VERIFY_ASSETS_PATH = ROOT / "scripts" / "verify-release-assets.py"
 EXPECTED_WORKERS = {
   "pdf-form": {"pdf-form-generate", "pdf-form-fill"},
   "presentation": {"presentation-pptx"},
@@ -34,6 +37,42 @@ EXPECTED_COMPAT_RUNTIME = {
 
 
 class WorkerCatalogTests(unittest.TestCase):
+  def test_worker_packager_excludes_secret_model_and_cache_paths(self):
+    spec = importlib.util.spec_from_file_location("worker_packager", PACKAGER_PATH)
+    self.assertIsNotNone(spec)
+    self.assertIsNotNone(spec.loader)
+    packager = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(packager)
+
+    ignored = packager._ignore(
+      "workers/python/example",
+      [
+        ".env",
+        ".env.production",
+        "credentials.json",
+        "private.pem",
+        "private.key",
+        ".cache",
+        "model-cache",
+        "models",
+        "worker.py",
+      ],
+    )
+
+    self.assertEqual(
+      ignored,
+      {
+        ".env",
+        ".env.production",
+        "credentials.json",
+        "private.pem",
+        "private.key",
+        ".cache",
+        "model-cache",
+        "models",
+      },
+    )
+
   def test_catalog_maps_each_worker_project_and_capabilities(self):
     self.assertTrue(CATALOG_PATH.is_file(), "workers/catalog.json must exist")
     catalog = json.loads(CATALOG_PATH.read_text(encoding="utf-8"))
@@ -64,6 +103,26 @@ class WorkerCatalogTests(unittest.TestCase):
   def test_worker_installer_entrypoint_exists(self):
     self.assertTrue(INSTALLER_PATH.is_file(), "scripts/install-worker.sh must exist")
 
+  def test_worker_bundle_smoke_entrypoint_exists(self):
+    self.assertTrue(SMOKE_WORKERS_PATH.is_file(), "worker bundle smoke script must exist")
+
+  def test_release_asset_verifier_entrypoint_exists(self):
+    self.assertTrue(VERIFY_ASSETS_PATH.is_file(), "release asset verifier must exist")
+
+  def test_release_version_checker_accepts_matching_tag_and_rejects_mismatch(self):
+    checker = ROOT / "scripts" / "check-release-version.sh"
+    expected = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    matching = subprocess.run(
+      ["sh", str(checker), f"v{expected}"], capture_output=True, text=True, check=False
+    )
+    self.assertEqual(matching.returncode, 0, matching.stderr)
+
+    mismatch = subprocess.run(
+      ["sh", str(checker), f"v{expected}.mismatch"], capture_output=True, text=True, check=False
+    )
+    self.assertNotEqual(mismatch.returncode, 0)
+    self.assertIn("does not match VERSION", mismatch.stderr)
+
   def test_cli_uses_output_dir_and_reports_missing_core_archives(self):
     with TemporaryDirectory() as temporary:
       environment = {**os.environ, "OUTPUT_DIR": temporary}
@@ -86,7 +145,8 @@ class WorkerCatalogTests(unittest.TestCase):
       output_dir = Path(temporary)
       targets = ("linux-amd64", "linux-arm64", "darwin-amd64", "darwin-arm64")
       for target in targets:
-        (output_dir / f"orgdoc-{version}-{target}.tar.gz").write_bytes(b"core archive fixture")
+        with tarfile.open(output_dir / f"orgdoc-{version}-{target}.tar.gz", "w:gz"):
+          pass
 
       result = subprocess.run(
         [sys.executable, str(PACKAGER_PATH), version],
@@ -119,6 +179,37 @@ class WorkerCatalogTests(unittest.TestCase):
           hashlib.sha256((output_dir / filename).read_bytes()).hexdigest(), expected_hash
         )
 
+      verification = subprocess.run(
+        [sys.executable, str(VERIFY_ASSETS_PATH), version, str(output_dir)],
+        check=False,
+        capture_output=True,
+        text=True,
+      )
+      self.assertEqual(verification.returncode, 0, verification.stderr)
+
+      tampered_archive = output_dir / sorted(bundles)[0]
+      original_archive = tampered_archive.read_bytes()
+      tampered_archive.write_bytes(original_archive + b"tampered")
+      tampered = subprocess.run(
+        [sys.executable, str(VERIFY_ASSETS_PATH), version, str(output_dir)],
+        check=False,
+        capture_output=True,
+        text=True,
+      )
+      self.assertEqual(tampered.returncode, 1)
+      self.assertIn("checksum mismatch", tampered.stderr)
+      tampered_archive.write_bytes(original_archive)
+
+      (output_dir / "unreviewed.log").write_text("not a release asset", encoding="utf-8")
+      unexpected = subprocess.run(
+        [sys.executable, str(VERIFY_ASSETS_PATH), version, str(output_dir)],
+        check=False,
+        capture_output=True,
+        text=True,
+      )
+      self.assertEqual(unexpected.returncode, 1)
+      self.assertIn("unexpected: unreviewed.log", unexpected.stderr)
+
       media_bundle = output_dir / f"orgdoc-worker-media-transcription-{version}-source.tar.gz"
       with tarfile.open(media_bundle, "r:gz") as archive:
         members = set(archive.getnames())
@@ -129,6 +220,7 @@ class WorkerCatalogTests(unittest.TestCase):
           "examples/organization-docs/capabilities/media-transcription/capability.yaml", members
         )
         self.assertIn("pyproject.toml", members)
+        self.assertIn("docs/migration/media-report-cli-compatibility.md", members)
         self.assertIn("src/media_report/templates/prompts/generic.md", members)
         self.assertFalse(any(".venv" in name or "__pycache__" in name for name in members))
         metadata = json.load(archive.extractfile("worker-bundle.json"))
@@ -286,6 +378,83 @@ done
       )
       self.assertEqual(orgdoc.read_text(encoding="utf-8"), "existing orgdoc binary\n")
       self.assertFalse((base / "data" / "orgdoc" / "workers" / "media-report").exists())
+
+  def test_release_smoke_installs_and_invokes_every_worker_bundle(self):
+    version = (ROOT / "VERSION").read_text(encoding="utf-8").strip()
+    with TemporaryDirectory() as temporary:
+      base = Path(temporary)
+      release_dir = base / "release"
+      release_dir.mkdir()
+      for target in ("linux-amd64", "linux-arm64", "darwin-amd64", "darwin-arm64"):
+        archive_path = release_dir / f"orgdoc-{version}-{target}.tar.gz"
+        if target == "linux-amd64":
+          with tarfile.open(archive_path, "w:gz") as archive:
+            archive.add(INSTALLER_PATH, arcname="install-worker.sh")
+        else:
+          archive_path.write_bytes(b"core archive fixture")
+      package = subprocess.run(
+        [sys.executable, str(PACKAGER_PATH), version],
+        check=False,
+        capture_output=True,
+        text=True,
+        env={**os.environ, "OUTPUT_DIR": str(release_dir)},
+      )
+      self.assertEqual(package.returncode, 0, package.stderr)
+
+      fake_bin = base / "fake-bin"
+      fake_bin.mkdir()
+      uv = fake_bin / "uv"
+      uv.write_text(
+        """#!/bin/sh
+if [ "${1-}" = "--version" ]; then
+  echo "uv 0.11.8"
+  exit 0
+fi
+PROJECT=
+while [ "$#" -gt 0 ]; do
+  if [ "$1" = "--project" ]; then
+    PROJECT=$2
+    shift 2
+  else
+    shift
+  fi
+done
+python3 - "$PROJECT" <<'PY'
+import json
+import sys
+import tomllib
+from pathlib import Path
+
+project = Path(sys.argv[1])
+entrypoints = tomllib.loads((project / "pyproject.toml").read_text())["project"]["scripts"]
+binary_dir = project / ".venv" / "bin"
+binary_dir.mkdir(parents=True)
+for name in entrypoints:
+    path = binary_dir / name
+    path.write_text(
+        "#!/bin/sh\\n"
+        "printf '%s\\n' '{\\\"protocol_version\\\":1,\\\"status\\\":\\\"failed\\\","
+        "\\\"outputs\\\":[],\\\"diagnostics\\\":[]}'\\n",
+        encoding="utf-8",
+    )
+    path.chmod(0o755)
+PY
+""",
+        encoding="utf-8",
+      )
+      uv.chmod(0o755)
+
+      result = subprocess.run(
+        ["sh", str(ROOT / "scripts" / "smoke-worker-bundles.sh"), version, str(release_dir)],
+        check=False,
+        capture_output=True,
+        text=True,
+        cwd=base,
+        env={**os.environ, "PATH": f"{fake_bin}:{os.environ['PATH']}", "HOME": str(base / "home")},
+      )
+
+      self.assertEqual(result.returncode, 0, result.stderr)
+      self.assertIn("Installed and invoked 7 worker bundles", result.stdout)
 
 
 if __name__ == "__main__":

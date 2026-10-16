@@ -444,7 +444,7 @@ requires-dist = [
     { name = "rich", specifier = "==15.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = "==0.15.17" },
     { name = "tomli-w", specifier = "==1.2.0" },
-    { name = "twine", marker = "extra == 'dev'", specifier = "==6.2.0" },
+    { name = "twine", marker = "extra == 'dev'", specifier = "==7.0.0" },
     { name = "ty", marker = "extra == 'dev'", specifier = "==0.0.49" },
     { name = "typer", specifier = "==0.26.7" },
 ]

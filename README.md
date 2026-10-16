@@ -11,13 +11,24 @@ Download the portable `.tar.gz` release archive matching your operating system a
 To build all supported binaries from a source checkout:
 
 ```sh
-scripts/build-release.sh
+VERSION=$(cat VERSION)
+RELEASE_DIR=$(mktemp -d)
+scripts/check-release-version.sh "v$VERSION"
+OUTPUT_DIR="$RELEASE_DIR" scripts/build-release.sh "$VERSION"
+OUTPUT_DIR="$RELEASE_DIR" python scripts/package-workers.py "$VERSION"
+python scripts/verify-release-assets.py "$VERSION" "$RELEASE_DIR"
 ```
 
-To verify an extracted Linux release package without Python or other workers on `PATH`:
+To verify the core Linux archive without Python or worker executables on `PATH`:
 
 ```sh
-scripts/smoke-release.sh build/release/orgdoc-0.1.0-linux-amd64.tar.gz
+scripts/smoke-release.sh "$RELEASE_DIR/orgdoc-$VERSION-linux-amd64.tar.gz"
+```
+
+To install and probe the worker bundles from the release assets:
+
+```sh
+scripts/smoke-worker-bundles.sh "$VERSION" "$RELEASE_DIR"
 ```
 
 See [installation details](INSTALL.md) for checksum verification, install paths, supported targets, and worker setup.
